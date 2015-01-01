@@ -4,7 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../Axis.cpp \
+../Axle.cpp \
 ../CarBody.cpp \
 ../Chassis.cpp \
 ../Combination.cpp \
@@ -14,7 +14,7 @@ CPP_SRCS += \
 ../main.cpp 
 
 OBJS += \
-./Axis.o \
+./Axle.o \
 ./CarBody.o \
 ./Chassis.o \
 ./Combination.o \
@@ -24,7 +24,7 @@ OBJS += \
 ./main.o 
 
 CPP_DEPS += \
-./Axis.d \
+./Axle.d \
 ./CarBody.d \
 ./Chassis.d \
 ./Combination.d \

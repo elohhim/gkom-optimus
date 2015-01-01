@@ -9,8 +9,8 @@
 
 Combination::Combination() {
 	this->posX=0;
-	this->posY=0;
-	this->angle=0;
+	this->posZ=-10;
+	this->angle=30;
 
 }
 

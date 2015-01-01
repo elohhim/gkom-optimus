@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "Axis.h"
+#include "Axle.h"
 
 using namespace std;
 class Chassis {
@@ -43,27 +43,27 @@ public:
 	}
 
 	int getAxesQuantity() const {
-		return axesQuantity;
+		return axleQuantity;
 	}
 
 	void setAxesQuantity(int axesQuantity) {
-		this->axesQuantity = axesQuantity;
+		this->axleQuantity = axesQuantity;
 	}
 
-	const Axis& getFrontAxis() const {
-		return frontAxis;
+	const Axle& getFrontAxis() const {
+		return frontAxle;
 	}
 
-	void setFrontAxis(const Axis& frontAxis) {
-		this->frontAxis = frontAxis;
+	void setFrontAxis(const Axle& frontAxis) {
+		this->frontAxle = frontAxis;
 	}
 
-	const vector<Axis*>& getRearAxes() const {
-		return rearAxes;
+	const vector<Axle*>& getRearAxes() const {
+		return rearAxles;
 	}
 
-	void setRearAxes(const vector<Axis*>& rearAxes) {
-		this->rearAxes = rearAxes;
+	void setRearAxes(const vector<Axle*>& rearAxes) {
+		this->rearAxles = rearAxes;
 	}
 
 	float getDimCG() const {
@@ -90,22 +90,26 @@ public:
 		dimTWB = dimTwb;
 	}
 
+	float getDimCoupling() const {
+		return dimFA + dimTWB;
+	}
+
 private:
 	//dimensions
 	float width;
 	float height;
 	float length;
-	//distance from front to front axis
+	//distance from front to front axle
 	float dimFA;
 	//theoretical wheel base
 	float dimTWB;
-	//distance from first rear axis to theoretical rear axis
+	//distance from first rear axle to theoretical rear axle
 	float dimCG;
-	//axes quantity
-	int axesQuantity;
-	//axes
-	Axis frontAxis;
-	vector<Axis*> rearAxes;
+	//axle quantity
+	int axleQuantity;
+	//axles
+	Axle frontAxle;
+	vector<Axle*> rearAxles;
 };
 
 #endif /* CHASSIS_H_ */

@@ -1,18 +1,19 @@
 /*
- * Axis.cpp
+ * Axle.cpp
  *
  *  Created on: Jan 1, 2015
  *      Author: elohhim
  */
 
-#include "Axis.h"
+#include "Axle.h"
 
-Axis::Axis() {
+Axle::Axle() {
+	rotation = 0;
 	this->trackOfWheels = 2.29;
 	this->wheelsAngle = 0;
 }
 
-Axis::~Axis() {
+Axle::~Axle() {
 	// TODO Auto-generated destructor stub
 }
 

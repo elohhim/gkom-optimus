@@ -1,19 +1,19 @@
 /*
- * Axis.h
+ * Axle.h
  *
  *  Created on: Jan 1, 2015
  *      Author: elohhim
  */
 
-#ifndef AXIS_H_
-#define AXIS_H_
+#ifndef AXLE_H_
+#define AXLE_H_
 
 #include "Wheel.h"
 
-class Axis {
+class Axle {
 public:
-	Axis();
-	virtual ~Axis();
+	Axle();
+	virtual ~Axle();
 
 	float getTrackOfWheels() const {
 		return trackOfWheels;
@@ -31,8 +31,12 @@ public:
 		this->wheelsAngle = wheelsAngle;
 	}
 
-	bool isFront() const {
-		return isFrontFlag;
+	bool getIsFront() const {
+		return isFront;
+	}
+
+	void setIsFront( bool flag) {
+		isFront = flag;
 	}
 
 	float getRotation() const {
@@ -64,11 +68,11 @@ private:
 	Wheel leftWheel;
 	Wheel rightWheel;
 	//attributes
-	bool isFrontFlag = false;
+	bool isFront = false;
 	float trackOfWheels;
 	//in degrees
 	float rotation;
 	float wheelsAngle;
 };
 
-#endif /* AXIS_H_ */
+#endif /* AXLE_H_ */

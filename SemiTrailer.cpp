@@ -8,7 +8,15 @@
 #include "SemiTrailer.h"
 
 SemiTrailer::SemiTrailer() {
-	// TODO Auto-generated constructor stub
+	length = 16.2;
+	overallHeight = 3.15;
+	width = 2.49;
+	height = 2.90;
+	kingpinSetback = 2.0;
+	wheelbase = 12.5;
+	effectiveOverhang = length - wheelbase - kingpinSetback;
+	axleQuantity = 2;
+
 
 }
 

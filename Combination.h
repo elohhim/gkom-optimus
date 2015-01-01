@@ -32,12 +32,12 @@ public:
 		this->posX = posX;
 	}
 
-	float getPosY() const {
-		return posY;
+	float getPosZ() const {
+		return posZ;
 	}
 
-	void setPosY(float posY) {
-		this->posY = posY;
+	void setPosZ(float posZ) {
+		this->posZ = posZ;
 	}
 
 	const SemiTrailer& getSemiTrailer() const {
@@ -62,7 +62,7 @@ private:
     SemiTrailer semiTrailer;
 	//position of representative point
 	float posX;
-	float posY;
+	float posZ;
 	//angle between tractor and trailer
 	float angle;
 };

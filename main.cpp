@@ -105,7 +105,7 @@ void drawWheel( /*const Wheel& model*/)
 	drawCuboid(-0.1, -0.4, -0.4, 0.1, 0.4, 0.4);
 }
 
-void drawAxis( const Axis& model)
+void drawAxis( const Axle& model)
 {
 	glPushMatrix();
 		//rotation
@@ -115,14 +115,14 @@ void drawAxis( const Axis& model)
 		//left wheel
 		glPushMatrix();
 			glTranslatef(-model.getTrackOfWheels()/2, 0.0f, 0.0f);
-			if( model.isFront() )
+			if( model.getIsFront() )
 				glRotatef( model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
 			drawWheel();
 		glPopMatrix();
 		//right wheel
 		glPushMatrix();
 			glTranslatef(model.getTrackOfWheels()/2, 0.0f, 0.0f);
-			if( model.isFront() )
+			if( model.getIsFront() )
 				glRotatef( model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
 			drawWheel();
 		glPopMatrix();
@@ -167,12 +167,19 @@ void drawTractorUnit(const TractorUnit& model)
 
 void drawSemiTrailer(const SemiTrailer& model)
 {
-
+	GLfloat diffuse[] = {0.1, 0.3, 0.3, 1.0};
+	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse );
+	glPushMatrix();
+		glTranslatef(0.0f, model.getOverallHeight()-model.getHeight(),-model.getKingpinSetback());
+		drawCuboid(-model.getWidth()/2,0,0,model.getWidth()/2,model.getHeight(),model.getLength());
+	glPopMatrix();
 }
 
 void drawCombination(const Combination& model)
 {
 	drawTractorUnit(model.getTractorUnit());
+	glTranslatef(0.0f, 0.0f, model.getTractorUnit().getChassis().getDimCoupling());
+	glRotatef( model.getAngle(), 0.0f, 1.0f, 0.0f);
 	drawSemiTrailer(model.getSemiTrailer());
 }
 
@@ -184,7 +191,9 @@ void drawScene()
 		glRotatef(20.0f, 1.0f, 0.0f, 0.0f);
 		drawEnviroment();//*/
 		glPushMatrix();
-			glRotatef( 90.0f, 0.0f, 1.0f, 0.0f);
+			glRotatef(90,0.0f,1.0f,0.0f);
+			glTranslatef(optimusPrime.getPosX(), 0.0f , optimusPrime.getPosZ());
+			glRotatef(optimusPrime.getTractorUnit().getDirection(), 0.0f, 1.0f, 0.0f);
 			drawCombination( optimusPrime );
 		glPopMatrix();
 	glPopMatrix();
