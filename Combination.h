@@ -59,7 +59,7 @@ public:
 private:
 	//parts
 	TractorUnit tractorUnit;
-    SemiTrailer semiTrailer;
+	SemiTrailer semiTrailer;
 	//position of representative point
 	float posX;
 	float posZ;

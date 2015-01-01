@@ -17,7 +17,6 @@ SemiTrailer::SemiTrailer() {
 	effectiveOverhang = length - wheelbase - kingpinSetback;
 	axleQuantity = 2;
 
-
 }
 
 SemiTrailer::~SemiTrailer() {

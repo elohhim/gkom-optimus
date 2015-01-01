@@ -8,9 +8,9 @@
 #include "Combination.h"
 
 Combination::Combination() {
-	this->posX=0;
-	this->posZ=-10;
-	this->angle=30;
+	this->posX = 0;
+	this->posZ = -10;
+	this->angle = 30;
 
 }
 

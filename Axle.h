@@ -35,7 +35,7 @@ public:
 		return isFront;
 	}
 
-	void setIsFront( bool flag) {
+	void setIsFront(bool flag) {
 		isFront = flag;
 	}
 

@@ -9,7 +9,7 @@
 
 CarBody::CarBody() {
 	this->width = 2.49;
-	this->height = 3.87-1.04;
+	this->height = 3.87 - 1.04;
 	this->length = 2.225;
 }
 

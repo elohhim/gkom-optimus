@@ -8,7 +8,7 @@
 #include "Wheel.h"
 
 Wheel::Wheel() {
-	diameter = 22.5*0.0254;
+	diameter = 22.5 * 0.0254;
 
 }
 
