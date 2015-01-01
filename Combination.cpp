@@ -8,7 +8,9 @@
 #include "Combination.h"
 
 Combination::Combination() {
-	// TODO Auto-generated constructor stub
+	this->posX=0;
+	this->posY=0;
+	this->angle=0;
 
 }
 

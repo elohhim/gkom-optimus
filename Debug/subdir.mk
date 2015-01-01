@@ -4,21 +4,33 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../Axis.cpp \
+../CarBody.cpp \
+../Chassis.cpp \
 ../Combination.cpp \
 ../SemiTrailer.cpp \
 ../TractorUnit.cpp \
+../Wheel.cpp \
 ../main.cpp 
 
 OBJS += \
+./Axis.o \
+./CarBody.o \
+./Chassis.o \
 ./Combination.o \
 ./SemiTrailer.o \
 ./TractorUnit.o \
+./Wheel.o \
 ./main.o 
 
 CPP_DEPS += \
+./Axis.d \
+./CarBody.d \
+./Chassis.d \
 ./Combination.d \
 ./SemiTrailer.d \
 ./TractorUnit.d \
+./Wheel.d \
 ./main.d 
 
 

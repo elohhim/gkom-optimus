@@ -8,10 +8,55 @@
 #ifndef TRACTORUNIT_H_
 #define TRACTORUNIT_H_
 
+#include "CarBody.h"
+#include "Chassis.h"
+
 class TractorUnit {
 public:
 	TractorUnit();
 	virtual ~TractorUnit();
+
+	const CarBody& getCarBody() const {
+		return carBody;
+	}
+
+	void setCarBody(const CarBody& carBody) {
+		this->carBody = carBody;
+	}
+
+	const Chassis& getChassis() const {
+		return chassis;
+	}
+
+	void setChassis(const Chassis& chassis) {
+		this->chassis = chassis;
+	}
+
+	float getDirection() const {
+		return direction;
+	}
+
+	void setDirection(float direction) {
+		this->direction = direction;
+	}
+
+	float getVelocity() const {
+		return velocity;
+	}
+
+	void setVelocity(float velocity) {
+		this->velocity = velocity;
+	}
+
+private:
+	//parts
+	Chassis chassis;
+	CarBody carBody;
+	//velocity
+	float velocity;
+	//directionXZ as angle
+	float direction;
+
 };
 
 #endif /* TRACTORUNIT_H_ */

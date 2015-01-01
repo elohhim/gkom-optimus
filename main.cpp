@@ -5,16 +5,18 @@
  *
  */
 
-#include <GL/glut.h>
+#include <GL/freeglut_std.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 #include <iostream>
-#include <math.h>
 
+#include "CarBody.h"
+#include "Chassis.h"
 #include "Combination.h"
 #include "SemiTrailer.h"
 #include "TractorUnit.h"
 
+#define SKYBLUE 0.53f, 0.81f, 0.98f, 1.0f
+#define YARDSIZE 20
 using namespace std;
 
 Combination optimusPrime;
@@ -38,10 +40,6 @@ void drawCuboid( float x1, float y1, float z1, float x2, float y2, float z2)
 				cuboidVertices[offset + 0] = (i==0)?x1:x2;
 				cuboidVertices[offset + 1] = (j==0)?y1:y2;
 				cuboidVertices[offset + 2] = (k==0)?z1:z2;
-				cout << "Wierzcholek " << 4*i+2*j+k << "\t" << i << j << k << ":\t" <<
-						cuboidVertices[offset + 0] << "\t" <<
-						cuboidVertices[offset + 1] << "\t" <<
-						cuboidVertices[offset + 2] << "\t" << endl;
 				offset+=3;
 			}// for k
 		}//for j
@@ -97,48 +95,92 @@ void drawWalls( float size )
 
 void drawEnviroment()
 {
-	float size = 15;
+	float size = YARDSIZE;
 	drawBasis(size);
 	drawWalls(size);
 }
 
-void drawChassis(TractorUnit model)
+void drawWheel( /*const Wheel& model*/)
 {
-	drawCuboid( 0, 0, 0, 2.49, 1.04, 7.035);
+	drawCuboid(-0.1, -0.4, -0.4, 0.1, 0.4, 0.4);
 }
 
-void drawCarBody(TractorUnit model)
+void drawAxis( const Axis& model)
 {
 	glPushMatrix();
-		glTranslatef(0.0f, 1.04f, 0.0f);
-		drawCuboid( 0, 0, 0, 2.49, 3.87-1.04, 2.225);
+		//rotation
+		glRotatef( model.getRotation(), 1.0f, 0.0f, 0.0f);
+		//axis
+
+		//left wheel
+		glPushMatrix();
+			glTranslatef(-model.getTrackOfWheels()/2, 0.0f, 0.0f);
+			if( model.isFront() )
+				glRotatef( model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
+			drawWheel();
+		glPopMatrix();
+		//right wheel
+		glPushMatrix();
+			glTranslatef(model.getTrackOfWheels()/2, 0.0f, 0.0f);
+			if( model.isFront() )
+				glRotatef( model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
+			drawWheel();
+		glPopMatrix();
 	glPopMatrix();
 }
 
-void drawTractorUnit(TractorUnit model)
+void drawChassis(const Chassis& model)
 {
-	GLfloat diffuse[] = {0.1, 0.1, 0.1, 1.0};
+	//chassis plate
+	drawCuboid( -model.getWidth()/2+0.5, 0, 0, model.getWidth()/2-0.5, model.getHeight(), model.getLength());
+
+	//front axis
+	glPushMatrix();
+		glTranslatef(0.0f, -model.getFrontAxis().getLeftWheel().getDiameter()/2, model.getDimFA());
+		drawAxis(model.getFrontAxis());
+
+		glTranslatef(0.0f, 0.0f, (model.getDimTWB()-model.getDimCG()) );
+		//rear axes
+		for( int i = 0; i < model.getAxesQuantity() - 1; i++)
+		{
+			drawAxis( *(model.getRearAxes()[i]) );
+			cout << 2*model.getDimCG()/(model.getAxesQuantity()-1) << endl;
+			glTranslatef(0.0f, 0.0f, 2*model.getDimCG()/(model.getAxesQuantity()-2) );
+		}
+	glPopMatrix();
+}
+
+void drawCarBody(const CarBody& model)
+{
+	drawCuboid( -model.getWidth()/2, 0, 0, model.getWidth()/2, model.getHeight(), model.getLength());
+}
+
+void drawTractorUnit(const TractorUnit& model)
+{
+	GLfloat diffuse[] = {0.3, 0.1, 0.3, 1.0};
 	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse );
-	drawChassis(model);
-	drawCarBody(model);
+	glTranslatef(0.0f, model.getChassis().getFrontAxis().getLeftWheel().getDiameter(), 0.0f);
+	drawChassis(model.getChassis());
+	glTranslatef(0.0f, model.getChassis().getHeight(), 0.0f);
+	drawCarBody(model.getCarBody());
 }
 
-void drawSemiTrailer(SemiTrailer model)
+void drawSemiTrailer(const SemiTrailer& model)
 {
 
 }
 
-void drawCombination(Combination model)
+void drawCombination(const Combination& model)
 {
-	drawTractorUnit(model.tractorUnit);
-	drawSemiTrailer(model.semiTrailer);
+	drawTractorUnit(model.getTractorUnit());
+	drawSemiTrailer(model.getSemiTrailer());
 }
 
 void drawScene()
 {
 	glPushMatrix();
 		glTranslatef(0.0f, 0.0f, -10.0f);
-		glRotatef(-10.0f, 0.0f, 1.0f, 0.0f);
+		glRotatef(-30.0f, 0.0f, 1.0f, 0.0f);
 		glRotatef(20.0f, 1.0f, 0.0f, 0.0f);
 		drawEnviroment();//*/
 		glPushMatrix();
@@ -172,7 +214,7 @@ void init()
 
 void display()
 {
-	glClearColor( 0.53f, 0.81f, 0.98f, 1.0f);
+	glClearColor(SKYBLUE);
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     drawScene();
     //displayObjects();
