@@ -15,6 +15,10 @@ public:
 	RearImpactGuard( float, float, float);
 	virtual ~RearImpactGuard();
 
+
+	void draw();
+
+
 private:
 	float height;
 	float width;

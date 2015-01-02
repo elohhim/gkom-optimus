@@ -11,20 +11,18 @@
 #include <vector>
 
 #include "Axle.h"
-#include "Part.h"
+#include "ChassisPlate.h"
+#include "FuelTank.h"
 
 using namespace std;
 class Chassis: public Part {
 public:
-	Chassis();
+	Chassis(float x, float y, float z);
 	virtual ~Chassis();
 
-	float getHeight() const {
-		return height;
-	}
 
-	void setHeight(float height) {
-		this->height = height;
+	float getHeight() const {
+		return axles[0].getLeftWheel().getDiameter()/2 + 0.3 + chassisPlate.getHeight();
 	}
 
 	float getLength() const {
@@ -51,20 +49,12 @@ public:
 		this->axleQuantity = axesQuantity;
 	}
 
-	const Axle& getFrontAxis() const {
-		return frontAxle;
+	const vector<Axle>& getRearAxes() const {
+		return axles;
 	}
 
-	void setFrontAxis(const Axle& frontAxis) {
-		this->frontAxle = frontAxis;
-	}
-
-	const vector<Axle*>& getRearAxes() const {
-		return rearAxles;
-	}
-
-	void setRearAxes(const vector<Axle*>& rearAxes) {
-		this->rearAxles = rearAxes;
+	void setRearAxes(const vector<Axle>& rearAxes) {
+		this->axles = rearAxes;
 	}
 
 	float getDimCG() const {
@@ -95,10 +85,13 @@ public:
 		return dimFA + dimTWB;
 	}
 
+
+	void draw();
+
+
 private:
 	//dimensions
 	float width;
-	float height;
 	float length;
 	//distance from front to front axle
 	float dimFA;
@@ -108,9 +101,10 @@ private:
 	float dimCG;
 	//axle quantity
 	int axleQuantity;
-	//axles
-	Axle frontAxle;
-	vector<Axle*> rearAxles;
+	//parts
+	ChassisPlate chassisPlate;
+	vector<FuelTank> fuelTanks;
+	vector<Axle> axles;
 };
 
 #endif /* CHASSIS_H_ */

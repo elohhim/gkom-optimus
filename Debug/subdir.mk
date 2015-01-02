@@ -7,7 +7,10 @@ CPP_SRCS += \
 ../Axle.cpp \
 ../CarBody.cpp \
 ../Chassis.cpp \
+../ChassisPlate.cpp \
 ../Combination.cpp \
+../Drawable.cpp \
+../FuelTank.cpp \
 ../Part.cpp \
 ../RearImpactGuard.cpp \
 ../SemiTrailer.cpp \
@@ -20,7 +23,10 @@ OBJS += \
 ./Axle.o \
 ./CarBody.o \
 ./Chassis.o \
+./ChassisPlate.o \
 ./Combination.o \
+./Drawable.o \
+./FuelTank.o \
 ./Part.o \
 ./RearImpactGuard.o \
 ./SemiTrailer.o \
@@ -33,7 +39,10 @@ CPP_DEPS += \
 ./Axle.d \
 ./CarBody.d \
 ./Chassis.d \
+./ChassisPlate.d \
 ./Combination.d \
+./Drawable.d \
+./FuelTank.d \
 ./Part.d \
 ./RearImpactGuard.d \
 ./SemiTrailer.d \

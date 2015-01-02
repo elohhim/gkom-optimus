@@ -23,40 +23,6 @@ using namespace std;
 
 Combination optimusPrime;
 
-void drawCuboid(float x1, float y1, float z1, float x2, float y2, float z2) {
-	glEnableClientState( GL_VERTEX_ARRAY);
-
-	int cuboidVerticesCount = 8;
-
-	GLfloat* cuboidVertices = new GLfloat[cuboidVerticesCount * 3];
-
-	//creating vertexes
-	int offset = 0;
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
-			for (int k = 0; k < 2; k++) {
-				cuboidVertices[offset + 0] = (i == 0) ? x1 : x2;
-				cuboidVertices[offset + 1] = (j == 0) ? y1 : y2;
-				cuboidVertices[offset + 2] = (k == 0) ? z1 : z2;
-				offset += 3;
-			} // for k
-		} //for j
-	} //for i
-
-	GLushort cuboidIndices[24] = {
-			0, 1, 3, 2,
-			6, 7, 5, 4,
-			0, 1, 5, 4,
-			2, 3, 7, 6,
-			0, 2, 6, 4,
-			1, 3, 7, 5 };
-
-	glVertexPointer(3, GL_FLOAT, 0, cuboidVertices);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, cuboidIndices);
-
-	delete cuboidVertices;
-}
-
 void drawBasis(float size) {
 	GLfloat diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
 	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
@@ -94,101 +60,17 @@ void drawEnviroment() {
 	drawWalls(size);
 }
 
-void drawWheel( /*const Wheel& model*/) {
-	drawCuboid(-0.1, -0.4, -0.4, 0.1, 0.4, 0.4);
-}
-
-void drawAxis(const Axle& model) {
-	glPushMatrix();
-		//rotation
-		glRotatef(model.getRotation(), 1.0f, 0.0f, 0.0f);
-		//axis
-
-		//left wheel
-		glPushMatrix();
-			glTranslatef(-model.getTrackOfWheels() / 2, 0.0f, 0.0f);
-			if (model.getIsFront())
-				glRotatef(model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
-			drawWheel();
-		glPopMatrix();
-		//right wheel
-		glPushMatrix();
-			glTranslatef(model.getTrackOfWheels() / 2, 0.0f, 0.0f);
-			if (model.getIsFront())
-				glRotatef(model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
-			drawWheel();
-		glPopMatrix();
-	glPopMatrix();
-}
-
-void drawChassis(const Chassis& model) {
-	//chassis plate
-	drawCuboid(-model.getWidth() / 2 + 0.5, 0, 0, model.getWidth() / 2 - 0.5,
-			model.getHeight(), model.getLength());
-
-	//front axis
-	glPushMatrix();
-		glTranslatef(0.0f, -model.getFrontAxis().getLeftWheel().getDiameter() / 2,
-				model.getDimFA());
-		drawAxis(model.getFrontAxis());
-
-		glTranslatef(0.0f, 0.0f, (model.getDimTWB() - model.getDimCG()));
-		//rear axes
-		for (int i = 0; i < model.getAxesQuantity() - 1; i++) {
-			drawAxis(*(model.getRearAxes()[i]));
-			cout << 2 * model.getDimCG() / (model.getAxesQuantity() - 1) << endl;
-			glTranslatef(0.0f, 0.0f,
-					2 * model.getDimCG() / (model.getAxesQuantity() - 2));
-		}
-	glPopMatrix();
-}
-
-void drawCarBody(const CarBody& model) {
-	drawCuboid(-model.getWidth() / 2, 0, 0, model.getWidth() / 2,
-			model.getHeight(), model.getLength());
-}
-
-void drawTractorUnit(const TractorUnit& model) {
-	GLfloat diffuse[] = { 0.3, 0.1, 0.3, 1.0 };
-	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
-	glTranslatef(0.0f,
-			model.getChassis().getFrontAxis().getLeftWheel().getDiameter(),
-			0.0f);
-	drawChassis(model.getChassis());
-	glTranslatef(0.0f, model.getChassis().getHeight(), 0.0f);
-	drawCarBody(model.getCarBody());
-}
-
-void drawSemiTrailer(const SemiTrailer& model) {
-	GLfloat diffuse[] = { 0.1, 0.3, 0.3, 1.0 };
-	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
-	glPushMatrix();
-		glTranslatef(0.0f, model.getOverallHeight() - model.getHeight(),
-				-model.getKingpinSetback());
-		drawCuboid(-model.getWidth() / 2, 0, 0, model.getWidth() / 2,
-			model.getHeight(), model.getLength());
-	glPopMatrix();
-}
-
-void drawCombination(const Combination& model) {
-	drawTractorUnit(model.getTractorUnit());
-	glTranslatef(0.0f, 0.0f,
-			model.getTractorUnit().getChassis().getDimCoupling());
-	glRotatef(model.getAngle(), 0.0f, 1.0f, 0.0f);
-	drawSemiTrailer(model.getSemiTrailer());
-}
-
 void drawScene() {
 	glPushMatrix();
-		glTranslatef(0.0f, 0.0f, -10.0f);
-		glRotatef(-30.0f, 0.0f, 1.0f, 0.0f);
+		glTranslatef(0.0f, -5.0f, -YARDSIZE/2);
+		glRotatef(-10.0f, 0.0f, 1.0f, 0.0f);
 		glRotatef(20.0f, 1.0f, 0.0f, 0.0f);
-		drawEnviroment(); //*/
+		//drawEnviroment(); //*/
 			glPushMatrix();
 			glRotatef(90, 0.0f, 1.0f, 0.0f);
 			glTranslatef(optimusPrime.getPosX(), 0.0f, optimusPrime.getPosZ());
 			glRotatef(optimusPrime.getTractorUnit().getDirection(), 0.0f, 1.0f, 0.0f);
-			drawCombination(optimusPrime);
+			optimusPrime.draw();
 		glPopMatrix();
 	glPopMatrix();
 }
@@ -218,7 +100,6 @@ void display() {
 	glClearColor(SKYBLUE);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	drawScene();
-	//displayObjects();
 	glFlush();
 }
 
@@ -229,12 +110,15 @@ void reshape(GLsizei w, GLsizei h) {
 		glLoadIdentity();
 		int size = 40;
 		if (w <= h) {
-			glOrtho(-size / 4, size / 4, -size / 4 * h / w, size / 4 * h / w,
-					-size, size);
+//			glOrtho(-size / 4, size / 4, -size / 4 * h / w, size / 4 * h / w,
+//					-size, size);
+			glFrustum(-size / 4, size / 4, -size / 4 * h / w, size / 4 * h / w,
+					size, 3*size);
 		} else {
-			//glOrtho( -size/4*w/h, size/4*w/h, -size/4, size/4, -size, size );
 			glOrtho(-size / 4 * w / h, size / 4 * w / h, -size / 4, size / 4,
 					-size, size);
+//			glFrustum(-size / 4* w / h, size / 4* w / h, -size / 4, size / 4,
+//								10, 2*size);
 		}
 		glMatrixMode( GL_MODELVIEW);
 	}

@@ -16,3 +16,6 @@ RearImpactGuard::~RearImpactGuard() {
 	// TODO Auto-generated destructor stub
 }
 
+void RearImpactGuard::draw()
+{
+}

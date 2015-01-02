@@ -23,8 +23,16 @@ public:
 		this->diameter = diameter;
 	}
 
+
+	void draw();
+
+
 private:
 	float diameter;
+
+	//parts
+	//Rim rim;
+	//Tire tire;
 };
 
 #endif /* WHEEL_H_ */

@@ -7,13 +7,21 @@
 
 #include "CarBody.h"
 
-CarBody::CarBody() {
-	this->width = 2.49;
-	this->height = 3.87 - 1.04;
-	this->length = 2.225;
+CarBody::CarBody( float x, float y, float z)
+: Part(x,y,z),
+  width(2.49),
+  height(3.47),
+  length(2.225)
+{
 }
 
 CarBody::~CarBody() {
 	// TODO Auto-generated destructor stub
 }
 
+void CarBody::draw()
+{
+	GLfloat diffuse[] = RED;
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+	Drawable::drawCuboid(-width/ 2, 0, 0, width/2, height, length);
+}

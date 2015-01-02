@@ -8,7 +8,9 @@
 #ifndef PART_H_
 #define PART_H_
 
-class Part {
+#include "Drawable.h"
+
+class Part: public Drawable {
 public:
 	Part();
 	Part( float x, float y, float z);
@@ -37,6 +39,10 @@ public:
 	void setPositionZ(float positionZ) {
 		this->positionZ = positionZ;
 	}
+
+
+	void assemble();
+
 
 protected:
 	float positionX;

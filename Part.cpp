@@ -20,19 +20,10 @@ Part::~Part() {
 	// TODO Auto-generated destructor stub
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Part::assemble()
+{
+	glPushMatrix();
+		glTranslatef( positionX, positionY, positionZ);
+		draw();
+	glPopMatrix();
+}

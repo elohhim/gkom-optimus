@@ -10,11 +10,13 @@
 
 #include "CarBody.h"
 #include "Chassis.h"
+#include "Drawable.h"
 
-class TractorUnit {
+class TractorUnit: public Drawable {
 public:
 	TractorUnit();
 	virtual ~TractorUnit();
+
 
 	const CarBody& getCarBody() const {
 		return carBody;
@@ -47,6 +49,10 @@ public:
 	void setVelocity(float velocity) {
 		this->velocity = velocity;
 	}
+
+
+	void draw();
+
 
 private:
 	//parts

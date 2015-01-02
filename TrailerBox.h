@@ -12,8 +12,17 @@
 
 class TrailerBox: public Part {
 public:
-	TrailerBox();
+	TrailerBox( float x, float y, float z, float w, float h, float l);
 	virtual ~TrailerBox();
+
+
+	void draw();
+
+
+private:
+	float width;
+	float height;
+	float length;
 };
 
 #endif /* TRAILERBOX_H_ */

@@ -7,12 +7,20 @@
 
 #include "TractorUnit.h"
 
-TractorUnit::TractorUnit() {
-	// TODO Auto-generated constructor stub
-
+TractorUnit::TractorUnit()
+: chassis(0.0f, 0.0f, 0.0f),
+  carBody(0.0f, chassis.getHeight(), 0.0f),
+  velocity(0),
+  direction(0)
+{
 }
 
-TractorUnit::~TractorUnit() {
-	// TODO Auto-generated destructor stub
+TractorUnit::~TractorUnit()
+{
 }
 
+void TractorUnit::draw()
+{
+	chassis.assemble();
+	carBody.assemble();
+}

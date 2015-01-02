@@ -11,7 +11,7 @@
 #include "SemiTrailer.h"
 #include "TractorUnit.h"
 
-class Combination {
+class Combination: public Drawable {
 public:
 	Combination();
 	virtual ~Combination();
@@ -55,6 +55,10 @@ public:
 	void setTractorUnit(const TractorUnit& tractorUnit) {
 		this->tractorUnit = tractorUnit;
 	}
+
+
+	void draw();
+
 
 private:
 	//parts

@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class SemiTrailer {
+class SemiTrailer: public Drawable {
 public:
 	SemiTrailer();
 	virtual ~SemiTrailer();
@@ -90,6 +90,10 @@ public:
 	void setChassis(const Chassis& chassis) {
 		this->chassis = chassis;
 	}
+
+
+	void draw();
+
 
 private:
 	//dimensions
