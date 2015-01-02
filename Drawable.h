@@ -17,6 +17,7 @@
 #define RED {1.0f, 0.0f, 0.0f, 1.0f}
 #define GRAY50 {0.5f, 0.5f, 0.5f, 1.0f}
 #define WHITE {1.0f, 1.0f, 1.0f, 1.0f}
+#define YELLOW {1.0f, 1.0f, 0.0f, 1.0f}
 
 class Drawable {
 public:

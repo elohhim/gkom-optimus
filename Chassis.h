@@ -18,6 +18,7 @@ using namespace std;
 class Chassis: public Part {
 public:
 	Chassis(float x, float y, float z);
+	Chassis(float x, float y, float z, int axleQ, float axleDistance);
 	virtual ~Chassis();
 
 
@@ -87,7 +88,7 @@ public:
 
 
 	void draw();
-
+	void steerWheels( float angle );
 
 private:
 	//dimensions

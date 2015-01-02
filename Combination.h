@@ -8,6 +8,8 @@
 #ifndef COMBINATION_H_
 #define COMBINATION_H_
 
+#include <cmath>
+
 #include "SemiTrailer.h"
 #include "TractorUnit.h"
 
@@ -56,19 +58,44 @@ public:
 		this->tractorUnit = tractorUnit;
 	}
 
+	float getDirection() const
+	{
+		return direction;
+	}
+
+	void setDirection(float direction)
+	{
+		this->direction = direction;
+	}
+
+	float getVelocity() const
+	{
+		return velocity;
+	}
+
+	void setVelocity(float velocity)
+	{
+		this->velocity = velocity;
+	}
+
 
 	void draw();
-
+	void goForward();
+	void goBackward();
+	void steerWheels( float angle);
 
 private:
-	//parts
-	TractorUnit tractorUnit;
-	SemiTrailer semiTrailer;
 	//position of representative point
 	float posX;
 	float posZ;
-	//angle between tractor and trailer
+	float direction;
+	float velocity;
+	//angle between tractor axis and trailer axis
 	float angle;
+
+	//parts
+	TractorUnit tractorUnit;
+	SemiTrailer semiTrailer;
 };
 
 #endif /* COMBINATION_H_ */

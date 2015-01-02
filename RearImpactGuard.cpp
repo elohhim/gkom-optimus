@@ -8,7 +8,9 @@
 #include "RearImpactGuard.h"
 
 RearImpactGuard::RearImpactGuard( float w, float h, float posZ)
-: Part(0.0f, 0.0f, posZ), height(h), width(w)
+: Part(0.0f, 0.0f, posZ),
+  height(h),
+  width(w)
 {
 }
 
@@ -18,4 +20,21 @@ RearImpactGuard::~RearImpactGuard() {
 
 void RearImpactGuard::draw()
 {
+	GLfloat diffuse[] = YELLOW;
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+	//right hanger
+	glPushMatrix();
+		glTranslatef(-(width/2-0.5), 0.76f, 0.0f);
+		drawCuboid(-0.1, 0.0, -0.1, 0.1, height-0.2, 0.1);
+	glPopMatrix();
+	//left hanger
+	glPushMatrix();
+		glTranslatef((width/2-0.5), 0.76f, 0.0f);
+		drawCuboid(-0.1, 0.0, -0.1, 0.1, height-0.2, 0.1);
+	glPopMatrix();
+	//bar
+	glPushMatrix();
+		glTranslatef( 0.0f, 0.56, 0.0f);
+		drawCuboid(-width/2, 0.0, -0.1, width/2, 0.2, 0.1);
+	glPopMatrix();
 }

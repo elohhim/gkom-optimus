@@ -12,7 +12,7 @@
 #include "Chassis.h"
 #include "Drawable.h"
 
-class TractorUnit: public Drawable {
+class TractorUnit: public Part {
 public:
 	TractorUnit();
 	virtual ~TractorUnit();
@@ -34,35 +34,14 @@ public:
 		this->chassis = chassis;
 	}
 
-	float getDirection() const {
-		return direction;
-	}
-
-	void setDirection(float direction) {
-		this->direction = direction;
-	}
-
-	float getVelocity() const {
-		return velocity;
-	}
-
-	void setVelocity(float velocity) {
-		this->velocity = velocity;
-	}
-
 
 	void draw();
-
+	void steerWheels( float angle );
 
 private:
 	//parts
 	Chassis chassis;
 	CarBody carBody;
-	//velocity
-	float velocity;
-	//directionXZ as angle
-	float direction;
-
 };
 
 #endif /* TRACTORUNIT_H_ */

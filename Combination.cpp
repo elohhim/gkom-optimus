@@ -7,11 +7,14 @@
 
 #include "Combination.h"
 
-Combination::Combination() {
-	this->posX = 0;
-	this->posZ = -10;
-	this->angle = 0;
-
+Combination::Combination()
+: posX(0),
+  posZ(0),
+  direction(45),
+  velocity(0),
+  angle(0),
+  semiTrailer( 0.0, 0.0, tractorUnit.getChassis().getDimCoupling(), angle)
+{
 }
 
 Combination::~Combination() {
@@ -21,9 +24,24 @@ Combination::~Combination() {
 void Combination::draw()
 {
 	tractorUnit.draw();
-	glPushMatrix();
-	glTranslatef(0.0f, tractorUnit.getChassis().getHeight(), tractorUnit.getChassis().getDimCoupling());
-	glRotatef(angle, 0.0f, 1.0f, 0.0f);
-	semiTrailer.draw();
-	glPopMatrix();
+	semiTrailer.assemble();
+}
+
+void Combination::goForward()
+{
+	float distance = 0.1;
+	posX-= sinf(direction/180 * M_PI)*distance;
+	posZ-= cosf(direction/180 * M_PI)*distance;
+}
+
+void Combination::goBackward()
+{
+	float distance = 0.1;
+	posX+= sinf(direction/180 * M_PI)*distance;
+	posZ+= cosf(direction/180 * M_PI)*distance;
+}
+
+void Combination::steerWheels( float angle)
+{
+	tractorUnit.steerWheels( angle );
 }
