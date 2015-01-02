@@ -33,9 +33,12 @@ float lx=0.0f,lz=-1.0f;
 float x=5.0f,z=5.0f;
 // the key states. These variables will be zero
 //when no key is being presses
-float deltaAngle = 0.0f;
-float deltaMove = 0;
+float deltaCameraAngle = 0;
+float deltaCameraMove = 0;
+float deltaCameraSideMove = 0;
 
+float deltaAngle = 0;
+float deltaMove = 0;
 
 void drawBasis(float size) {
 	GLfloat diffuse[] = { 0.2, 0.4, 0.3, 1.0 };
@@ -104,24 +107,34 @@ void init() {
 	glEnable( GL_DEPTH_TEST);
 }
 
-void computePos(float deltaMove) {
-
+void computeCameraPos(float deltaMove, float deltaSideMove)
+{
 	x += deltaMove * lx * 0.1f;
 	z += deltaMove * lz * 0.1f;
+	x += deltaSideMove * lz * 0.1f;
+	z += deltaSideMove * -lx * 0.1f;
 }
 
-void computeDir(float deltaAngle) {
-
+void computeCameraDir(float deltaAngle)
+{
 	angle += deltaAngle;
 	lx = sin(angle);
 	lz = -cos(angle);
 }
 
 void display() {
-	if (deltaMove)
-			computePos(deltaMove);
-		if (deltaAngle)
-			computeDir(deltaAngle);
+	if (deltaCameraMove || deltaCameraSideMove)
+		computeCameraPos(deltaCameraMove, deltaCameraSideMove);
+	if (deltaCameraAngle)
+		computeCameraDir(deltaCameraAngle);
+
+	if (deltaMove>0)
+		optimusPrime.goForward();
+	else if (deltaMove<0)
+		optimusPrime.goBackward();
+	if (deltaAngle)
+		optimusPrime.steerWheels(deltaAngle);
+
 	glClearColor(SKYBLUE);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Reset transformations
@@ -144,12 +157,8 @@ void reshape(GLsizei w, GLsizei h) {
 		glMatrixMode( GL_PROJECTION);
 		glLoadIdentity();
 		if (w <= h) {
-//			glOrtho(-size / 4, size / 4, -size / 4 * h / w, size / 4 * h / w,
-//					-size, size);
 			gluPerspective(45, h / w, 1, 100);
 		} else {
-//			glOrtho(-size / 4 * w / h, size / 4 * w / h, -size / 4, size / 4,
-//					-size, size);
 			gluPerspective(45, w / h, 1, 100);
 		}
 		glMatrixMode( GL_MODELVIEW);
@@ -159,20 +168,34 @@ void reshape(GLsizei w, GLsizei h) {
 void pressNormalKeys( unsigned char key, int xx, int yy) {
 
 	switch (key) {
-		case 'a':
-			deltaAngle = -0.01f;
+		case 'q':
+		case 'Q':
+			deltaCameraAngle = -0.01f;
 			break;
 
-		case 'd':
-			deltaAngle = 0.01f;
+		case 'e':
+		case 'E':
+			deltaCameraAngle = 0.01f;
 			break;
 
 		case 'w':
-			deltaMove = 0.5f;
+		case 'W':
+			deltaCameraMove = 1.0f;
 			break;
 
 		case 's':
-			deltaMove = -0.5f;
+		case 'S':
+			deltaCameraMove = -1.0f;
+			break;
+
+		case 'a':
+		case 'A':
+			deltaCameraSideMove = 0.5f;
+			break;
+
+		case 'd':
+		case 'D':
+			deltaCameraSideMove = -0.5f;
 			break;
 
 		case 27:
@@ -184,40 +207,64 @@ void pressNormalKeys( unsigned char key, int xx, int yy) {
 void releaseNormalKeys( unsigned char key, int x, int y) {
 
 	switch (key) {
-		case 'a':
-		case 'd':
-			deltaAngle = 0.0f;
+		case 'q':
+		case 'Q':
+		case 'e':
+		case 'E':
+			deltaCameraAngle = 0.0f;
 			break;
 
 		case 'w':
+		case 'W':
 		case 's':
-			deltaMove = 0;
+		case 'S':
+			deltaCameraMove = 0;
+			break;
+
+		case 'a':
+		case 'A':
+		case 'd':
+		case 'D':
+			deltaCameraSideMove = 0;
 			break;
 	}
 }
-void pressSpecialKeys(int key, int xx, int yy) {
 
-	switch(key) {
+void pressSpecialKeys(int key, int xx, int yy)
+{
+	switch(key)
+	{
 		case GLUT_KEY_UP:
-			cout << "UP" << endl;
-			optimusPrime.goForward();
+			deltaMove = 1;
 			break;
 
 		case GLUT_KEY_DOWN:
-			cout << "DOWN" << endl;
-			optimusPrime.goBackward();
+			deltaMove = -1;
 			break;
 
 		case GLUT_KEY_LEFT:
-			cout << "LEFT" << endl;
-			optimusPrime.steerWheels(1.0f);
+			deltaAngle = 1;
 			break;
 
 		case GLUT_KEY_RIGHT:
-			cout << "RIGHT" << endl;
-			optimusPrime.steerWheels(-1.0f);
+			deltaAngle = -1;
 			break;
+	}
+}
 
+void releaseSpecialKeys(int key, int xx, int yy)
+{
+	switch(key)
+	{
+	case GLUT_KEY_LEFT:
+	case GLUT_KEY_RIGHT:
+		deltaAngle = 0;
+		break;
+
+	case GLUT_KEY_UP:
+	case GLUT_KEY_DOWN:
+		deltaMove= 0;
+		break;
 	}
 }
 
@@ -239,6 +286,8 @@ int main(int argc, char** argv) {
 	glutSpecialFunc(pressSpecialKeys);
 
 	glutKeyboardUpFunc(releaseNormalKeys);
+	glutSpecialUpFunc(releaseSpecialKeys);
+
 	init();
 
 	glutMainLoop();
