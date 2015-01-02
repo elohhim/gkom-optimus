@@ -8,9 +8,10 @@
 #ifndef AXLE_H_
 #define AXLE_H_
 
+#include "Part.h"
 #include "Wheel.h"
 
-class Axle {
+class Axle: public Part {
 public:
 	Axle();
 	virtual ~Axle();

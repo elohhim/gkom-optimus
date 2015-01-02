@@ -8,7 +8,9 @@
 #ifndef WHEEL_H_
 #define WHEEL_H_
 
-class Wheel {
+#include "Part.h"
+
+class Wheel: public Part {
 public:
 	Wheel();
 	virtual ~Wheel();

@@ -11,9 +11,10 @@
 #include <vector>
 
 #include "Axle.h"
+#include "Part.h"
 
 using namespace std;
-class Chassis {
+class Chassis: public Part {
 public:
 	Chassis();
 	virtual ~Chassis();

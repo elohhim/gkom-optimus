@@ -8,9 +8,9 @@
 #ifndef SEMITRAILER_H_
 #define SEMITRAILER_H_
 
-#include <vector>
-
-#include "Axle.h"
+#include "Chassis.h"
+#include "RearImpactGuard.h"
+#include "TrailerBox.h"
 
 using namespace std;
 
@@ -67,14 +67,6 @@ public:
 		this->overallHeight = overallHeight;
 	}
 
-	const vector<Axle*>& getRearAxles() const {
-		return rearAxles;
-	}
-
-	void setRearAxles(const vector<Axle*>& rearAxles) {
-		this->rearAxles = rearAxles;
-	}
-
 	float getWheelbase() const {
 		return wheelbase;
 	}
@@ -91,26 +83,33 @@ public:
 		this->width = width;
 	}
 
+	const Chassis& getChassis() const {
+		return chassis;
+	}
+
+	void setChassis(const Chassis& chassis) {
+		this->chassis = chassis;
+	}
+
 private:
-	//parts
-	/*
-	 * TrailerBox trailerBox;
-	 * RearImpactGuard rearImpactGuard;
-	 */
+	//dimensions
 	float length;
 	float height;
 	float width;
 	float overallHeight;
+	//distance from front to coupling
+	float kingpinSetback;
 	//wheelbase is between coupling and theooretical rear axle
 	float wheelbase;
 	//distance from first rear axle to theoretical rear axle
 	float effectiveOverhang;
-	//distance from front to coupling
-	float kingpinSetback;
 	//axle quantity
 	int axleQuantity;
-	//axles
-	vector<Axle*> rearAxles;
+
+	//parts
+	TrailerBox trailerBox;
+	RearImpactGuard rearImpactGuard;
+	Chassis chassis;
 };
 
 #endif /* SEMITRAILER_H_ */

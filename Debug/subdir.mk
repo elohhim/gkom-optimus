@@ -8,8 +8,11 @@ CPP_SRCS += \
 ../CarBody.cpp \
 ../Chassis.cpp \
 ../Combination.cpp \
+../Part.cpp \
+../RearImpactGuard.cpp \
 ../SemiTrailer.cpp \
 ../TractorUnit.cpp \
+../TrailerBox.cpp \
 ../Wheel.cpp \
 ../main.cpp 
 
@@ -18,8 +21,11 @@ OBJS += \
 ./CarBody.o \
 ./Chassis.o \
 ./Combination.o \
+./Part.o \
+./RearImpactGuard.o \
 ./SemiTrailer.o \
 ./TractorUnit.o \
+./TrailerBox.o \
 ./Wheel.o \
 ./main.o 
 
@@ -28,8 +34,11 @@ CPP_DEPS += \
 ./CarBody.d \
 ./Chassis.d \
 ./Combination.d \
+./Part.d \
+./RearImpactGuard.d \
 ./SemiTrailer.d \
 ./TractorUnit.d \
+./TrailerBox.d \
 ./Wheel.d \
 ./main.d 
 
