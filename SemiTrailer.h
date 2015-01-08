@@ -14,9 +14,9 @@
 
 using namespace std;
 
-class SemiTrailer {
+class SemiTrailer: public Part {
 public:
-	SemiTrailer();
+	SemiTrailer( float x, float y, float z, float ang);
 	virtual ~SemiTrailer();
 
 	int getAxleQuantity() const {
@@ -91,7 +91,13 @@ public:
 		this->chassis = chassis;
 	}
 
+
+	void draw();
+
+
 private:
+	//angle beetween tractor unit axis and trailer
+	float angle;
 	//dimensions
 	float length;
 	float height;

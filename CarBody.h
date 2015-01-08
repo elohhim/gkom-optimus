@@ -8,9 +8,11 @@
 #ifndef CARBODY_H_
 #define CARBODY_H_
 
-class CarBody {
+#include "Part.h"
+
+class CarBody: public Part {
 public:
-	CarBody();
+	CarBody( float x, float y, float z);
 	virtual ~CarBody();
 
 	float getHeight() const {
@@ -36,6 +38,10 @@ public:
 	void setWidth(float width) {
 		this->width = width;
 	}
+
+
+	void draw();
+
 
 private:
 	float width;

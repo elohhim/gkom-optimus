@@ -7,14 +7,41 @@
 
 #include "Combination.h"
 
-Combination::Combination() {
-	this->posX = 0;
-	this->posZ = -10;
-	this->angle = 30;
-
+Combination::Combination()
+: x(0),
+  z(0),
+  direction(45),
+  velocity(0),
+  angle(0),
+  semiTrailer( 0.0, 0.0, tractorUnit.getChassis().getDimCoupling(), angle)
+{
 }
 
 Combination::~Combination() {
 	// TODO Auto-generated destructor stub
 }
 
+void Combination::draw()
+{
+	tractorUnit.draw();
+	semiTrailer.assemble();
+}
+
+void Combination::goForward()
+{
+	float distance = 0.1;
+	x-= sinf(direction/180 * M_PI)*distance;
+	z-= cosf(direction/180 * M_PI)*distance;
+}
+
+void Combination::goBackward()
+{
+	float distance = 0.1;
+	x+= sinf(direction/180 * M_PI)*distance;
+	z+= cosf(direction/180 * M_PI)*distance;
+}
+
+void Combination::steerWheels( float angle)
+{
+	tractorUnit.steerWheels( angle );
+}

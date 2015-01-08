@@ -13,7 +13,7 @@
 
 class Axle: public Part {
 public:
-	Axle();
+	Axle( float x, float y, float z, bool front = false);
 	virtual ~Axle();
 
 	float getTrackOfWheels() const {
@@ -29,15 +29,16 @@ public:
 	}
 
 	void setWheelsAngle(float wheelsAngle) {
-		this->wheelsAngle = wheelsAngle;
+		if (isSteering)
+			this->wheelsAngle = wheelsAngle;
 	}
 
-	bool getIsFront() const {
-		return isFront;
+	bool getIsSteering() const {
+		return isSteering;
 	}
 
-	void setIsFront(bool flag) {
-		isFront = flag;
+	void setIsSteering(bool flag) {
+		isSteering = flag;
 	}
 
 	float getRotation() const {
@@ -64,12 +65,16 @@ public:
 		this->rightWheel = rightWheel;
 	}
 
+
+	void draw();
+
+
 private:
 	//parts
 	Wheel leftWheel;
 	Wheel rightWheel;
 	//attributes
-	bool isFront = false;
+	bool isSteering = false;
 	float trackOfWheels;
 	//in degrees
 	float rotation;

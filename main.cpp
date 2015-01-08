@@ -7,189 +7,75 @@
 
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
-#include <iostream>
+#include <GL/glu.h>
+#include <cstdlib>
 
-#include "Axle.h"
-#include "CarBody.h"
-#include "Chassis.h"
+#include "camera/BindedCamera.h"
+#include "camera/Camera.h"
+#include "camera/FreeCamera.h"
 #include "Combination.h"
-#include "SemiTrailer.h"
-#include "TractorUnit.h"
-#include "Wheel.h"
 
 #define SKYBLUE 0.53f, 0.81f, 0.98f, 1.0f
 #define YARDSIZE 20
+#define WALLS 0
+
 using namespace std;
 
 Combination optimusPrime;
 
-void drawCuboid(float x1, float y1, float z1, float x2, float y2, float z2) {
-	glEnableClientState( GL_VERTEX_ARRAY);
+float deltaAngle = 0;
+float deltaMove = 0;
 
-	int cuboidVerticesCount = 8;
+Camera* cameras[3] = { new FreeCamera(-YARDSIZE,2.0,YARDSIZE),
+		new FixedCamera(-YARDSIZE/2, 20.0, YARDSIZE, 0.0, 0.0, 0.0),
+		new BindedCamera(-YARDSIZE/2, 20.0, YARDSIZE, 0.0, 0.0, 0.0, &optimusPrime)
+};
 
-	GLfloat* cuboidVertices = new GLfloat[cuboidVerticesCount * 3];
-
-	//creating vertexes
-	int offset = 0;
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
-			for (int k = 0; k < 2; k++) {
-				cuboidVertices[offset + 0] = (i == 0) ? x1 : x2;
-				cuboidVertices[offset + 1] = (j == 0) ? y1 : y2;
-				cuboidVertices[offset + 2] = (k == 0) ? z1 : z2;
-				offset += 3;
-			} // for k
-		} //for j
-	} //for i
-
-	GLushort cuboidIndices[24] = {
-			0, 1, 3, 2,
-			6, 7, 5, 4,
-			0, 1, 5, 4,
-			2, 3, 7, 6,
-			0, 2, 6, 4,
-			1, 3, 7, 5 };
-
-	glVertexPointer(3, GL_FLOAT, 0, cuboidVertices);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, cuboidIndices);
-
-	delete cuboidVertices;
-}
+Camera* activeCamera = NULL;
 
 void drawBasis(float size) {
-	GLfloat diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
+	GLfloat diffuse[] = { 0.2, 0.4, 0.3, 1.0 };
 	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
 	glBegin(GL_QUADS);
-		glVertex3f(-size, 0.0f, size);
-		glVertex3f(size, 0.0f, size);
-		glVertex3f(size, 0.0f, -size);
-		glVertex3f(-size, 0.0f, -size);
+	glVertex3f(-size, 0.0f, size);
+	glVertex3f(size, 0.0f, size);
+	glVertex3f(size, 0.0f, -size);
+	glVertex3f(-size, 0.0f, -size);
 	glEnd();
 }
 
 void drawWalls(float size) {
 	GLfloat diffuse[] = { 0.91, 0.42, 0.22, 1.0 };
-	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
+	glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 	glBegin(GL_QUAD_STRIP);
-		glVertex3f(-size, 2.0f, size);
-		glVertex3f(-size, 0.0f, size);
-		glVertex3f(size, 2.0f, size);
-		glVertex3f(size, 0.0f, size);
+	glVertex3f(-size, 4.0f, size);
+	glVertex3f(-size, 0.0f, size);
+	glVertex3f(size, 4.0f, size);
+	glVertex3f(size, 0.0f, size);
 
-		glVertex3f(size, 2.0f, -size);
-		glVertex3f(size, 0.0f, -size);
+	glVertex3f(size, 4.0f, -size);
+	glVertex3f(size, 0.0f, -size);
 
-		glVertex3f(-size, 2.0f, -size);
-		glVertex3f(-size, 0.0f, -size);
+	glVertex3f(-size, 4.0f, -size);
+	glVertex3f(-size, 0.0f, -size);
 
-		glVertex3f(-size, 2.0f, size);
-		glVertex3f(-size, 0.0f, size);
+	glVertex3f(-size, 4.0f, size);
+	glVertex3f(-size, 0.0f, size);
 	glEnd();
 }
 
 void drawEnviroment() {
 	float size = YARDSIZE;
 	drawBasis(size);
-	drawWalls(size);
-}
-
-void drawWheel( /*const Wheel& model*/) {
-	drawCuboid(-0.1, -0.4, -0.4, 0.1, 0.4, 0.4);
-}
-
-void drawAxis(const Axle& model) {
-	glPushMatrix();
-		//rotation
-		glRotatef(model.getRotation(), 1.0f, 0.0f, 0.0f);
-		//axis
-
-		//left wheel
-		glPushMatrix();
-			glTranslatef(-model.getTrackOfWheels() / 2, 0.0f, 0.0f);
-			if (model.getIsFront())
-				glRotatef(model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
-			drawWheel();
-		glPopMatrix();
-		//right wheel
-		glPushMatrix();
-			glTranslatef(model.getTrackOfWheels() / 2, 0.0f, 0.0f);
-			if (model.getIsFront())
-				glRotatef(model.getWheelsAngle(), 0.0f, 1.0f, 0.0f);
-			drawWheel();
-		glPopMatrix();
-	glPopMatrix();
-}
-
-void drawChassis(const Chassis& model) {
-	//chassis plate
-	drawCuboid(-model.getWidth() / 2 + 0.5, 0, 0, model.getWidth() / 2 - 0.5,
-			model.getHeight(), model.getLength());
-
-	//front axis
-	glPushMatrix();
-		glTranslatef(0.0f, -model.getFrontAxis().getLeftWheel().getDiameter() / 2,
-				model.getDimFA());
-		drawAxis(model.getFrontAxis());
-
-		glTranslatef(0.0f, 0.0f, (model.getDimTWB() - model.getDimCG()));
-		//rear axes
-		for (int i = 0; i < model.getAxesQuantity() - 1; i++) {
-			drawAxis(*(model.getRearAxes()[i]));
-			cout << 2 * model.getDimCG() / (model.getAxesQuantity() - 1) << endl;
-			glTranslatef(0.0f, 0.0f,
-					2 * model.getDimCG() / (model.getAxesQuantity() - 2));
-		}
-	glPopMatrix();
-}
-
-void drawCarBody(const CarBody& model) {
-	drawCuboid(-model.getWidth() / 2, 0, 0, model.getWidth() / 2,
-			model.getHeight(), model.getLength());
-}
-
-void drawTractorUnit(const TractorUnit& model) {
-	GLfloat diffuse[] = { 0.3, 0.1, 0.3, 1.0 };
-	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
-	glTranslatef(0.0f,
-			model.getChassis().getFrontAxis().getLeftWheel().getDiameter(),
-			0.0f);
-	drawChassis(model.getChassis());
-	glTranslatef(0.0f, model.getChassis().getHeight(), 0.0f);
-	drawCarBody(model.getCarBody());
-}
-
-void drawSemiTrailer(const SemiTrailer& model) {
-	GLfloat diffuse[] = { 0.1, 0.3, 0.3, 1.0 };
-	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
-	glPushMatrix();
-		glTranslatef(0.0f, model.getOverallHeight() - model.getHeight(),
-				-model.getKingpinSetback());
-		drawCuboid(-model.getWidth() / 2, 0, 0, model.getWidth() / 2,
-			model.getHeight(), model.getLength());
-	glPopMatrix();
-}
-
-void drawCombination(const Combination& model) {
-	drawTractorUnit(model.getTractorUnit());
-	glTranslatef(0.0f, 0.0f,
-			model.getTractorUnit().getChassis().getDimCoupling());
-	glRotatef(model.getAngle(), 0.0f, 1.0f, 0.0f);
-	drawSemiTrailer(model.getSemiTrailer());
+	if( WALLS ) drawWalls(size);
 }
 
 void drawScene() {
+	drawEnviroment(); //*/
 	glPushMatrix();
-		glTranslatef(0.0f, 0.0f, -10.0f);
-		glRotatef(-30.0f, 0.0f, 1.0f, 0.0f);
-		glRotatef(20.0f, 1.0f, 0.0f, 0.0f);
-		drawEnviroment(); //*/
-			glPushMatrix();
-			glRotatef(90, 0.0f, 1.0f, 0.0f);
-			glTranslatef(optimusPrime.getPosX(), 0.0f, optimusPrime.getPosZ());
-			glRotatef(optimusPrime.getTractorUnit().getDirection(), 0.0f, 1.0f, 0.0f);
-			drawCombination(optimusPrime);
-		glPopMatrix();
+	glTranslatef(optimusPrime.getX(), 0.0f, optimusPrime.getZ());
+	glRotatef(optimusPrime.getDirection(), 0.0f, 1.0f, 0.0f);
+	optimusPrime.draw();
 	glPopMatrix();
 }
 
@@ -214,12 +100,31 @@ void init() {
 	glEnable( GL_DEPTH_TEST);
 }
 
-void display() {
+
+
+
+
+void display()
+{
+	activeCamera->handle();
+	if (deltaMove>0)
+		optimusPrime.goForward();
+	else if (deltaMove<0)
+		optimusPrime.goBackward();
+	if (deltaAngle)
+		optimusPrime.steerWheels(deltaAngle);
+
 	glClearColor(SKYBLUE);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Reset transformations
+	glLoadIdentity();
+
+	// Set the camera
+	activeCamera->lookThrough();
+
 	drawScene();
-	//displayObjects();
-	glFlush();
+
+	glutSwapBuffers();
 }
 
 void reshape(GLsizei w, GLsizei h) {
@@ -227,23 +132,162 @@ void reshape(GLsizei w, GLsizei h) {
 		glViewport(0, 0, w, h);
 		glMatrixMode( GL_PROJECTION);
 		glLoadIdentity();
-		int size = 40;
 		if (w <= h) {
-			glOrtho(-size / 4, size / 4, -size / 4 * h / w, size / 4 * h / w,
-					-size, size);
+			gluPerspective(45, h / w, 1, 100);
 		} else {
-			//glOrtho( -size/4*w/h, size/4*w/h, -size/4, size/4, -size, size );
-			glOrtho(-size / 4 * w / h, size / 4 * w / h, -size / 4, size / 4,
-					-size, size);
+			gluPerspective(45, w / h, 1, 100);
 		}
 		glMatrixMode( GL_MODELVIEW);
+	}
+}
+
+void pressNormalKeys( unsigned char key, int xx, int yy)
+{
+	FreeCamera* freeCamera = dynamic_cast<FreeCamera*>(activeCamera);
+	if(freeCamera)
+	{
+		switch (key) {
+		case '1':
+		case '2':
+		case '3':
+			activeCamera = cameras[key-49];
+			break;
+
+		case 'q':
+		case 'Q':
+			freeCamera->startRotate(Camera::PITCH, Camera::CCW);
+			break;
+
+		case 'e':
+		case 'E':
+			freeCamera->startRotate(Camera::PITCH, Camera::CW);
+			break;
+
+		case 'w':
+		case 'W':
+			freeCamera->startMove(Camera::FORWARD);
+			break;
+
+		case 's':
+		case 'S':
+			freeCamera->startMove(Camera::BACKWARDS);
+			break;
+
+		case 'a':
+		case 'A':
+			freeCamera->startMove(Camera::LEFT);
+			break;
+
+		case 'd':
+		case 'D':
+			freeCamera->startMove(Camera::RIGHT);
+			break;
+
+		case 'r':
+		case 'R':
+			freeCamera->startMove(Camera::UP);
+			break;
+
+		case 'f':
+		case 'F':
+			freeCamera->startMove(Camera::DOWN);
+			break;
+		}
+	}
+	switch (key) {
+	case '1':
+	case '2':
+	case '3':
+		activeCamera = cameras[key-49];
+		break;
+
+	case 27:
+		exit(0);
+		break;
+	}
+}
+
+void releaseNormalKeys( unsigned char key, int xx, int yy) {
+
+	//camera
+	FreeCamera* freeCamera = dynamic_cast<FreeCamera*>(activeCamera);
+	if(freeCamera)
+	{
+		switch (key) {
+		case 'q':
+		case 'Q':
+		case 'e':
+		case 'E':
+			freeCamera->stopRotate(Camera::PITCH);
+			break;
+
+		case 'w':
+		case 'W':
+		case 's':
+		case 'S':
+			freeCamera->stopMove(Camera::FORWARD);
+			break;
+
+		case 'a':
+		case 'A':
+		case 'd':
+		case 'D':
+			freeCamera->stopMove(Camera::LEFT);
+			break;
+
+		case 'r':
+		case 'R':
+		case 'f':
+		case 'F':
+			freeCamera->stopMove(Camera::UP);
+			break;
+		}
+	}
+
+}
+
+void pressSpecialKeys(int key, int xx, int yy)
+{
+	switch(key)
+	{
+	case GLUT_KEY_UP:
+		deltaMove = 1;
+		break;
+
+	case GLUT_KEY_DOWN:
+		deltaMove = -1;
+		break;
+
+	case GLUT_KEY_LEFT:
+		deltaAngle = 1;
+		break;
+
+	case GLUT_KEY_RIGHT:
+		deltaAngle = -1;
+		break;
+	}
+}
+
+void releaseSpecialKeys(int key, int xx, int yy)
+{
+	switch(key)
+	{
+	case GLUT_KEY_LEFT:
+	case GLUT_KEY_RIGHT:
+		deltaAngle = 0;
+		break;
+
+	case GLUT_KEY_UP:
+	case GLUT_KEY_DOWN:
+		deltaMove= 0;
+		break;
 	}
 }
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 
-	glutInitDisplayMode( GLUT_SINGLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 600);
@@ -252,8 +296,17 @@ int main(int argc, char** argv) {
 
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
+	glutIdleFunc(display);
+
+	glutKeyboardFunc(pressNormalKeys);
+	glutSpecialFunc(pressSpecialKeys);
+
+	glutKeyboardUpFunc(releaseNormalKeys);
+	glutSpecialUpFunc(releaseSpecialKeys);
 
 	init();
+
+	activeCamera = cameras[0];
 
 	glutMainLoop();
 
