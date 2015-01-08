@@ -8,8 +8,8 @@
 #include "Combination.h"
 
 Combination::Combination()
-: posX(0),
-  posZ(0),
+: x(0),
+  z(0),
   direction(45),
   velocity(0),
   angle(0),
@@ -30,15 +30,15 @@ void Combination::draw()
 void Combination::goForward()
 {
 	float distance = 0.1;
-	posX-= sinf(direction/180 * M_PI)*distance;
-	posZ-= cosf(direction/180 * M_PI)*distance;
+	x-= sinf(direction/180 * M_PI)*distance;
+	z-= cosf(direction/180 * M_PI)*distance;
 }
 
 void Combination::goBackward()
 {
 	float distance = 0.1;
-	posX+= sinf(direction/180 * M_PI)*distance;
-	posZ+= cosf(direction/180 * M_PI)*distance;
+	x+= sinf(direction/180 * M_PI)*distance;
+	z+= cosf(direction/180 * M_PI)*distance;
 }
 
 void Combination::steerWheels( float angle)

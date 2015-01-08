@@ -7,15 +7,13 @@
 
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
-#include <iostream>
+#include <GL/glu.h>
+#include <cstdlib>
 
-#include "Axle.h"
-#include "CarBody.h"
-#include "Chassis.h"
+#include "camera/BindedCamera.h"
+#include "camera/Camera.h"
+#include "camera/FreeCamera.h"
 #include "Combination.h"
-#include "SemiTrailer.h"
-#include "TractorUnit.h"
-#include "Wheel.h"
 
 #define SKYBLUE 0.53f, 0.81f, 0.98f, 1.0f
 #define YARDSIZE 20
@@ -25,29 +23,24 @@ using namespace std;
 
 Combination optimusPrime;
 
-// angle of rotation for the camera direction
-float angle=0.0;
-// actual vector representing the camera's direction
-float lx=0.0f,lz=-1.0f;
-// XZ position of the camera
-float x=5.0f,z=5.0f;
-// the key states. These variables will be zero
-//when no key is being presses
-float deltaCameraAngle = 0;
-float deltaCameraMove = 0;
-float deltaCameraSideMove = 0;
-
 float deltaAngle = 0;
 float deltaMove = 0;
+
+Camera* cameras[3] = { new FreeCamera(-YARDSIZE,2.0,YARDSIZE),
+		new FixedCamera(-YARDSIZE/2, 20.0, YARDSIZE, 0.0, 0.0, 0.0),
+		new BindedCamera(-YARDSIZE/2, 20.0, YARDSIZE, 0.0, 0.0, 0.0, &optimusPrime)
+};
+
+Camera* activeCamera = NULL;
 
 void drawBasis(float size) {
 	GLfloat diffuse[] = { 0.2, 0.4, 0.3, 1.0 };
 	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
 	glBegin(GL_QUADS);
-		glVertex3f(-size, 0.0f, size);
-		glVertex3f(size, 0.0f, size);
-		glVertex3f(size, 0.0f, -size);
-		glVertex3f(-size, 0.0f, -size);
+	glVertex3f(-size, 0.0f, size);
+	glVertex3f(size, 0.0f, size);
+	glVertex3f(size, 0.0f, -size);
+	glVertex3f(-size, 0.0f, -size);
 	glEnd();
 }
 
@@ -55,19 +48,19 @@ void drawWalls(float size) {
 	GLfloat diffuse[] = { 0.91, 0.42, 0.22, 1.0 };
 	glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 	glBegin(GL_QUAD_STRIP);
-		glVertex3f(-size, 4.0f, size);
-		glVertex3f(-size, 0.0f, size);
-		glVertex3f(size, 4.0f, size);
-		glVertex3f(size, 0.0f, size);
+	glVertex3f(-size, 4.0f, size);
+	glVertex3f(-size, 0.0f, size);
+	glVertex3f(size, 4.0f, size);
+	glVertex3f(size, 0.0f, size);
 
-		glVertex3f(size, 4.0f, -size);
-		glVertex3f(size, 0.0f, -size);
+	glVertex3f(size, 4.0f, -size);
+	glVertex3f(size, 0.0f, -size);
 
-		glVertex3f(-size, 4.0f, -size);
-		glVertex3f(-size, 0.0f, -size);
+	glVertex3f(-size, 4.0f, -size);
+	glVertex3f(-size, 0.0f, -size);
 
-		glVertex3f(-size, 4.0f, size);
-		glVertex3f(-size, 0.0f, size);
+	glVertex3f(-size, 4.0f, size);
+	glVertex3f(-size, 0.0f, size);
 	glEnd();
 }
 
@@ -80,9 +73,9 @@ void drawEnviroment() {
 void drawScene() {
 	drawEnviroment(); //*/
 	glPushMatrix();
-		glTranslatef(optimusPrime.getPosX(), 0.0f, optimusPrime.getPosZ());
-		glRotatef(optimusPrime.getDirection(), 0.0f, 1.0f, 0.0f);
-		optimusPrime.draw();
+	glTranslatef(optimusPrime.getX(), 0.0f, optimusPrime.getZ());
+	glRotatef(optimusPrime.getDirection(), 0.0f, 1.0f, 0.0f);
+	optimusPrime.draw();
 	glPopMatrix();
 }
 
@@ -107,27 +100,13 @@ void init() {
 	glEnable( GL_DEPTH_TEST);
 }
 
-void computeCameraPos(float deltaMove, float deltaSideMove)
+
+
+
+
+void display()
 {
-	x += deltaMove * lx * 0.1f;
-	z += deltaMove * lz * 0.1f;
-	x += deltaSideMove * lz * 0.1f;
-	z += deltaSideMove * -lx * 0.1f;
-}
-
-void computeCameraDir(float deltaAngle)
-{
-	angle += deltaAngle;
-	lx = sin(angle);
-	lz = -cos(angle);
-}
-
-void display() {
-	if (deltaCameraMove || deltaCameraSideMove)
-		computeCameraPos(deltaCameraMove, deltaCameraSideMove);
-	if (deltaCameraAngle)
-		computeCameraDir(deltaCameraAngle);
-
+	activeCamera->handle();
 	if (deltaMove>0)
 		optimusPrime.goForward();
 	else if (deltaMove<0)
@@ -139,12 +118,9 @@ void display() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Reset transformations
 	glLoadIdentity();
-	// Set the camera
-	gluLookAt(	x, 1.0f, z,
-				x+lx, 1.0f,  z+lz,
-				0.0f, 1.0f,  0.0f);
 
-	glTranslatef(0.0f, -5, -1.5*YARDSIZE);
+	// Set the camera
+	activeCamera->lookThrough();
 
 	drawScene();
 
@@ -165,90 +141,130 @@ void reshape(GLsizei w, GLsizei h) {
 	}
 }
 
-void pressNormalKeys( unsigned char key, int xx, int yy) {
+void pressNormalKeys( unsigned char key, int xx, int yy)
+{
+	FreeCamera* freeCamera = dynamic_cast<FreeCamera*>(activeCamera);
+	if(freeCamera)
+	{
+		switch (key) {
+		case '1':
+		case '2':
+		case '3':
+			activeCamera = cameras[key-49];
+			break;
 
-	switch (key) {
 		case 'q':
 		case 'Q':
-			deltaCameraAngle = -0.01f;
+			freeCamera->startRotate(Camera::PITCH, Camera::CCW);
 			break;
 
 		case 'e':
 		case 'E':
-			deltaCameraAngle = 0.01f;
+			freeCamera->startRotate(Camera::PITCH, Camera::CW);
 			break;
 
 		case 'w':
 		case 'W':
-			deltaCameraMove = 1.0f;
+			freeCamera->startMove(Camera::FORWARD);
 			break;
 
 		case 's':
 		case 'S':
-			deltaCameraMove = -1.0f;
+			freeCamera->startMove(Camera::BACKWARDS);
 			break;
 
 		case 'a':
 		case 'A':
-			deltaCameraSideMove = 0.5f;
+			freeCamera->startMove(Camera::LEFT);
 			break;
 
 		case 'd':
 		case 'D':
-			deltaCameraSideMove = -0.5f;
+			freeCamera->startMove(Camera::RIGHT);
 			break;
 
-		case 27:
-			exit(0);
+		case 'r':
+		case 'R':
+			freeCamera->startMove(Camera::UP);
 			break;
+
+		case 'f':
+		case 'F':
+			freeCamera->startMove(Camera::DOWN);
+			break;
+		}
+	}
+	switch (key) {
+	case '1':
+	case '2':
+	case '3':
+		activeCamera = cameras[key-49];
+		break;
+
+	case 27:
+		exit(0);
+		break;
 	}
 }
 
-void releaseNormalKeys( unsigned char key, int x, int y) {
+void releaseNormalKeys( unsigned char key, int xx, int yy) {
 
-	switch (key) {
+	//camera
+	FreeCamera* freeCamera = dynamic_cast<FreeCamera*>(activeCamera);
+	if(freeCamera)
+	{
+		switch (key) {
 		case 'q':
 		case 'Q':
 		case 'e':
 		case 'E':
-			deltaCameraAngle = 0.0f;
+			freeCamera->stopRotate(Camera::PITCH);
 			break;
 
 		case 'w':
 		case 'W':
 		case 's':
 		case 'S':
-			deltaCameraMove = 0;
+			freeCamera->stopMove(Camera::FORWARD);
 			break;
 
 		case 'a':
 		case 'A':
 		case 'd':
 		case 'D':
-			deltaCameraSideMove = 0;
+			freeCamera->stopMove(Camera::LEFT);
 			break;
+
+		case 'r':
+		case 'R':
+		case 'f':
+		case 'F':
+			freeCamera->stopMove(Camera::UP);
+			break;
+		}
 	}
+
 }
 
 void pressSpecialKeys(int key, int xx, int yy)
 {
 	switch(key)
 	{
-		case GLUT_KEY_UP:
-			deltaMove = 1;
-			break;
+	case GLUT_KEY_UP:
+		deltaMove = 1;
+		break;
 
-		case GLUT_KEY_DOWN:
-			deltaMove = -1;
-			break;
+	case GLUT_KEY_DOWN:
+		deltaMove = -1;
+		break;
 
-		case GLUT_KEY_LEFT:
-			deltaAngle = 1;
-			break;
+	case GLUT_KEY_LEFT:
+		deltaAngle = 1;
+		break;
 
-		case GLUT_KEY_RIGHT:
-			deltaAngle = -1;
-			break;
+	case GLUT_KEY_RIGHT:
+		deltaAngle = -1;
+		break;
 	}
 }
 
@@ -289,6 +305,8 @@ int main(int argc, char** argv) {
 	glutSpecialUpFunc(releaseSpecialKeys);
 
 	init();
+
+	activeCamera = cameras[0];
 
 	glutMainLoop();
 
