@@ -45,13 +45,15 @@ void Axle::draw()
 		//rotation
 		glRotatef(rotation, 1.0f, 0.0f, 0.0f);
 		//axle
+		glShadeModel(GL_SMOOTH);
 		glPushMatrix();
 			glColor4f(GRAY50);
-			glTranslatef(-trackOfWheels/2, 0.0f, 0.0f);
+			glTranslatef(-trackOfWheels/2-0.1, 0.0f, 0.0f);
 			glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
 			GLUquadricObj* obj = gluNewQuadric();
-			gluCylinder(obj, 0.08, 0.08, trackOfWheels, 30, 30);
+			gluCylinder(obj, 0.08, 0.08, trackOfWheels+0.2, 30, 30);
 		glPopMatrix();
+		glShadeModel(GL_FLAT);
 	glPopMatrix();
 		//right wheel
 		glPushMatrix();
@@ -63,11 +65,10 @@ void Axle::draw()
 		glPopMatrix();
 		//left wheel
 		glPushMatrix();
-			glTranslatef(trackOfWheels/2, 0.0f, 0.0f);
-			glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+			glTranslatef(trackOfWheels/2+leftWheel.getWidth(), 0.0f, 0.0f);
 			if (isSteering)
-				glRotatef(-wheelsAngle, 0.0f, 1.0f, 0.0f);
-			glRotatef(rotation, 1.0f, 0.0f, 0.0f);
+				glRotatef(wheelsAngle, 0.0f, 1.0f, 0.0f);
+			glRotatef(-rotation, 1.0f, 0.0f, 0.0f);
 			leftWheel.draw();
 		glPopMatrix();
 }

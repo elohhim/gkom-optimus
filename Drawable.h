@@ -28,7 +28,8 @@ struct Vertex
 	float texture[2];
 };
 
-class Drawable {
+class Drawable
+{
 public:
 	Drawable();
 	virtual ~Drawable();

@@ -17,7 +17,7 @@ TractorChassis::TractorChassis( float x, float y, float z)
   dimTWB(4.023),
   dimCG(1.445/2),
   axleQuantity(3),
-  chassisPlate(0, 0.0, -length+dimTWB+dimFA, width-0.5, 0.7, length)
+  chassisPlate(0, 0.0, -length+dimTWB+dimFA, width-1.0, 0.7, length)
 {
 	//front axle
 		axles.push_back(Axle(0.0, 0.0, dimTWB, true));

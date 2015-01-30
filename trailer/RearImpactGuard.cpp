@@ -10,6 +10,7 @@
 #include <GL/gl.h>
 
 #include "../Drawable.h"
+#include "../TextureLoader.h"
 
 RearImpactGuard::RearImpactGuard( float w, float h, float posZ)
 : Part(0.0f, 0.0f, posZ),
@@ -38,6 +39,6 @@ void RearImpactGuard::draw()
 	//bar
 	glPushMatrix();
 		glTranslatef( 0.0f, 0.56, 0.0f);
-		drawCuboid(-width/2, 0.0, -0.1, width/2, 0.2, 0.1);
+		drawCuboid(-width/2, 0.0, -0.1, width/2, 0.2, 0.1, TextureLoader::instance().IMPACT_GUARD);
 	glPopMatrix();
 }

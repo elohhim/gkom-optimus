@@ -13,101 +13,26 @@
 #include "camera/BindedCamera.h"
 #include "camera/Camera.h"
 #include "camera/FreeCamera.h"
+#include "Environment.h"
 #include "tractor/TractorUnit.h"
 #include "trailer/SemiTrailer.h"
-#include "TextureLoader.h"
-
-#define SKYBLUE 0.53f, 0.81f, 0.98f, 1.0f
-#define YARDSIZE 100
-#define WALLS 1
 
 using namespace std;
 
+Environment env;
 TractorUnit tractor;
 SemiTrailer trailer;
 
-Camera* cameras[3] = { new FreeCamera(0.0, 2.0, 0.0),
+Camera* cameras[3] = { new FreeCamera(0.0, 2.0, 12.0),
 		new FixedCamera(-YARDSIZE/4, 60.0, -YARDSIZE/4, 0.0, 0.0, 0.0),
-		new BindedCamera(tractor.getX()-3, 1.0, tractor.getZ(), 0.0, 0.0, 0.0, &tractor)
+		new BindedCamera(tractor.getX()-5.0, 1.0, tractor.getZ()+tractor.getChassis().getDimTWB(), 0.0, 0.0, 0.0, &tractor)
 };
 
 Camera* activeCamera = NULL;
 
-GLuint basisTexture;
-
-void drawBasis(float size)
-{
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, TextureLoader::instance().ASPHALT);
-	glPushMatrix();
-		glTranslatef(-size/2, 0.0, -size/2);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0.0, 0.0);
-			glNormal3f(0.0,1.0,0.0);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-
-			glTexCoord2f(size/2,0.0);
-			glNormal3f(0.0,1.0,0.0);
-			glVertex3f(size, 0.0f, 0.0f);
-
-
-			glTexCoord2f(size/2, size/2);
-			glNormal3f(0.0,1.0,0.0);
-			glVertex3f(size, 0.0f, size);
-
-
-			glTexCoord2f(0.0, size/2);
-			glNormal3f(0.0,1.0,0.0);
-			glVertex3f(0, 0.0f, size);
-		glEnd();
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-}
-
-
-void drawWalls(float size) {
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, TextureLoader::instance().BRICKS);
-	glPushMatrix();
-		glTranslatef(-size/2, 0.0, -size/2);
-		glBegin(GL_QUAD_STRIP);
-			glTexCoord2f(0.0, 0.0);
-			glVertex3f(0.0, 0.0f, 0.0);
-			glTexCoord2f(0.0, 2.0);
-			glVertex3f(0.0, 4.0f, 0.0);
-			glTexCoord2f(size, 0.0);
-			glVertex3f(0.0, 0.0f, size);
-			glTexCoord2f(size, 2.0);
-			glVertex3f(0.0, 4.0f, size);
-
-			glTexCoord2f(0.0, 0.0);
-			glVertex3f(size, 0.0f, size);
-			glTexCoord2f(0.0, 2.0);
-			glVertex3f(size, 4.0f, size);
-
-			glTexCoord2f(size, 0.0);
-			glVertex3f(size, 0.0f, 0.0);
-			glTexCoord2f(size, 2.0);
-			glVertex3f(size, 4.0f, 0.0);
-
-			glTexCoord2f(0.0, 0.0);
-			glVertex3f(0.0, 0.0f, 0.0);
-			glTexCoord2f(0.0, 2.0);
-			glVertex3f(0.0, 4.0f, 0.0);
-		glEnd();
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-}
-
-void drawEnviroment()
-{
-	drawBasis(YARDSIZE);
-	if( WALLS ) drawWalls(YARDSIZE);
-}
-
 void drawScene()
 {
-	drawEnviroment();
+	env.draw();
 	tractor.draw();
 	trailer.draw();
 
@@ -146,8 +71,6 @@ void init()
 	tractor.bindToTrailer(&trailer);
 }
 
-double lastLoopTime = 0.0;
-
 void display()
 {
 	activeCamera->handle();
@@ -159,16 +82,16 @@ void display()
 	glLoadIdentity();
 	// Set the camera
 	activeCamera->lookThrough();
-
 	drawScene();
-
 	glutSwapBuffers();
 }
 
-void reshape(GLsizei w, GLsizei h) {
-	if (h > 0 && w > 0) {
+void reshape(GLsizei w, GLsizei h)
+{
+	if (h > 0 && w > 0)
+	{
 		glViewport(0, 0, w, h);
-		glMatrixMode( GL_PROJECTION);
+		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		if (w <= h) {
 			gluPerspective(45, h / w, 1, 100);

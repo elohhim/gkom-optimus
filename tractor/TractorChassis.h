@@ -25,7 +25,7 @@ public:
 
 
 	float getHeight() const {
-		return axles[0].getLeftWheel().getDiameter()/2 + 0.2 + chassisPlate.getHeight();
+		return axles[0].getLeftWheel().getDiameter()/2 + chassisPlate.getHeight();
 	}
 
 	float getLength() const {

@@ -23,15 +23,16 @@ public:
 		this->diameter = diameter;
 	}
 
+	float getWidth() const	{
+		return this->width;
+	}
 
 	void draw();
 
 
 private:
 	float diameter;
-	//parts
-	//Rim rim;
-	//Tire tire;
+	float width;
 };
 
 #endif /* WHEEL_H_ */

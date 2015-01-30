@@ -14,7 +14,7 @@ TrailerChassis::TrailerChassis(float x, float y, float z, float axleDistance)
   dimFA(0.8),
   dimTWB(0),
   dimCG(0),
-  chassisPlate(0, 0.3, 0, width-1.0, 0.3, length),
+  chassisPlate(0, 0.0, 0, width-1.0, 0.7, length),
   axle1(0.0f, 0.0f, dimFA+0*axleDistance),
   axle2(0.0f, 0.0f, dimFA+1*axleDistance)
 {

@@ -62,12 +62,12 @@ void Drawable::drawCuboid(float x1, float y1, float z1, float x2, float y2, floa
 			1, 3, 7, 5
 	};
 
-	//		glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	//			glNormalPointer(GL_FLOAT, 0, cuboidNormals);
-	glVertexPointer(3, GL_FLOAT, 0, cuboidVertices);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, cuboidIndices);
-	//		glDisableClientState(GL_NORMAL_ARRAY);
+		glNormalPointer(GL_FLOAT, 0, cuboidNormals);
+		glVertexPointer(3, GL_FLOAT, 0, cuboidVertices);
+		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, cuboidIndices);
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	delete cuboidVertices;
@@ -152,7 +152,6 @@ void Drawable::drawCuboid(float x1, float y1, float z1, float x2, float y2, floa
 	glTexCoordPointer(2, GL_FLOAT, 0, cuboidTexCoord);
 
 	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, cuboidIndices );
-	//		glDrawArrays(GL_QUADS, 0, 24);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -170,27 +169,34 @@ void Drawable::drawCylinder( float radius, float height, int segments, GLuint te
 		glBegin(GL_TRIANGLE_FAN);
 			//srodek
 			glTexCoord2f(0.5,0.5);
-			//obwod
+			glNormal3f(0.0, 0.0, powf(-1.0,j));
 			glVertex3f(0.0, 0.0, j*height);
+			//obwod
 			for(int i = 0; i <= segments; i++)
 			{
 				float angle = i*2*M_PI/segments;
 				glTexCoord2f(0.5+0.5*sinf(angle), 0.5+0.5*cosf(angle));
+				glNormal3f(0.0, 0.0, powf(-1.0,j));
 				glVertex3f(radius*sinf(angle), radius*cosf(angle), j*height);
 			}
 		glEnd();
 	}
 	//bok
 	glBindTexture(GL_TEXTURE_2D, textureID2);
+	glShadeModel(GL_SMOOTH);
 	glBegin(GL_QUAD_STRIP);
 		for(int i = 0; i <= segments; i++)
 		{
 			float angle = i*2*M_PI/segments;
 			glTexCoord2f(0.0, i*8/(float)segments);
+			glNormal3f(sinf(angle), cosf(angle),0.0);
 			glVertex3f(radius*sinf(angle), radius*cosf(angle), 0.0);
+
 			glTexCoord2f(1.0, i*8/(float)segments);
+			glNormal3f(sinf(angle), cosf(angle),0.0);
 			glVertex3f(radius*sinf(angle), radius*cosf(angle), height);
 		}
 	glEnd();
+	glShadeModel(GL_FLAT);
 	glDisable(GL_TEXTURE_2D);
 }
