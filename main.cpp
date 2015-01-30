@@ -25,10 +25,12 @@ SemiTrailer trailer;
 
 Camera* cameras[3] = { new FreeCamera(0.0, 2.0, 12.0),
 		new FixedCamera(-YARDSIZE/4, 60.0, -YARDSIZE/4, 0.0, 0.0, 0.0),
-		new BindedCamera(tractor.getX()-5.0, 1.0, tractor.getZ()+tractor.getChassis().getDimTWB(), 0.0, 0.0, 0.0, &tractor)
+		new BindedCamera(tractor.getX()-10.0, 1.0, tractor.getZ()+tractor.getChassis().getDimTWB(), 0.0, 0.0, 0.0, &tractor)
 };
 
 Camera* activeCamera = NULL;
+
+bool lighting = false;
 
 void drawScene()
 {
@@ -52,7 +54,7 @@ void init()
 	GLfloat lm_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
 	glLightModelfv( GL_LIGHT_MODEL_AMBIENT, lm_ambient);
 
-	glEnable( GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 	glEnable( GL_LIGHT0);
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
@@ -75,7 +77,6 @@ void display()
 {
 	activeCamera->handle();
 	tractor.update(0.01);
-
 	glClearColor(SKYBLUE);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Reset transformations
@@ -153,6 +154,15 @@ void pressNormalKeys( unsigned char key, int xx, int yy)
 		case 'F':
 			freeCamera->startMove(Camera::DOWN);
 			break;
+
+		case 'l':
+		case 'L':
+			lighting = !lighting;
+			if(lighting)
+				glEnable(GL_LIGHTING);
+			else
+				glDisable(GL_LIGHTING);
+		break;
 		}
 	}
 	switch (key) {

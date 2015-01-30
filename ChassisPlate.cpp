@@ -23,5 +23,5 @@ ChassisPlate::~ChassisPlate()
 void ChassisPlate::draw()
 {
 	glColor4f(NAVY_BLUE);
-	drawCuboid(-width/2, 0, 0, width/2,	height, length);
+	drawCuboid(-width/2, 0, 0, width/2,	height, length, 0);
 }

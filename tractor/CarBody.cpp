@@ -31,7 +31,6 @@ void CarBody::draw()
 	glTranslatef(-0.02,0.1,0.0);
 	for(int i = -1; i<2; i+=2)
 	{
-		glShadeModel(GL_SMOOTH);
 		glBegin(GL_TRIANGLE_STRIP);
 		//0
 		glNormal3f(0.0,0.0, i);
@@ -95,7 +94,7 @@ void CarBody::draw()
 	glVertex3f(length, -0.8, -width/2);
 	//11
 	glVertex3f(2.0, -0.8, width/2);
-	glVertex3f(2.0, -0.8, -width/2);\
+	glVertex3f(2.0, -0.8, -width/2);
 	//9
 	glVertex3f(2.0, -0.4, width/2);
 	glVertex3f(2.0, -0.4, -width/2);
@@ -114,6 +113,4 @@ void CarBody::draw()
 	glEnd();
 
 	glPopMatrix();
-	glShadeModel(GL_FLAT);
-
 }
