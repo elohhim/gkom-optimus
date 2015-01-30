@@ -5,49 +5,28 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../Axle.cpp \
-../CarBody.cpp \
-../Chassis.cpp \
 ../ChassisPlate.cpp \
-../Combination.cpp \
 ../Drawable.cpp \
-../FuelTank.cpp \
 ../Part.cpp \
-../RearImpactGuard.cpp \
-../SemiTrailer.cpp \
-../TractorUnit.cpp \
-../TrailerBox.cpp \
+../TextureLoader.cpp \
 ../Wheel.cpp \
 ../main.cpp 
 
 OBJS += \
 ./Axle.o \
-./CarBody.o \
-./Chassis.o \
 ./ChassisPlate.o \
-./Combination.o \
 ./Drawable.o \
-./FuelTank.o \
 ./Part.o \
-./RearImpactGuard.o \
-./SemiTrailer.o \
-./TractorUnit.o \
-./TrailerBox.o \
+./TextureLoader.o \
 ./Wheel.o \
 ./main.o 
 
 CPP_DEPS += \
 ./Axle.d \
-./CarBody.d \
-./Chassis.d \
 ./ChassisPlate.d \
-./Combination.d \
 ./Drawable.d \
-./FuelTank.d \
 ./Part.d \
-./RearImpactGuard.d \
-./SemiTrailer.d \
-./TractorUnit.d \
-./TrailerBox.d \
+./TextureLoader.d \
 ./Wheel.d \
 ./main.d 
 

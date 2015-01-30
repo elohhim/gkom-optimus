@@ -38,9 +38,9 @@ public:
 			y = bind->getY() + relativeY;
 			z = bind->getZ() + relativeZ;
 
-			targetX = bind->getX() + targetRelativeX;
-			targetY = bind->getY() + targetRelativeY;
-			targetZ = bind->getZ() + targetRelativeZ;
+			targetX = bind->getX() - targetRelativeX;
+			targetY = bind->getY() - targetRelativeY;
+			targetZ = bind->getZ() - targetRelativeZ;
 		}
 		//else do nothing
 

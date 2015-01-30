@@ -13,73 +13,108 @@
 #include "camera/BindedCamera.h"
 #include "camera/Camera.h"
 #include "camera/FreeCamera.h"
-#include "Combination.h"
+#include "tractor/TractorUnit.h"
+#include "trailer/SemiTrailer.h"
+#include "TextureLoader.h"
 
 #define SKYBLUE 0.53f, 0.81f, 0.98f, 1.0f
-#define YARDSIZE 20
-#define WALLS 0
+#define YARDSIZE 100
+#define WALLS 1
 
 using namespace std;
 
-Combination optimusPrime;
+TractorUnit tractor;
+SemiTrailer trailer;
 
-float deltaAngle = 0;
-float deltaMove = 0;
-
-Camera* cameras[3] = { new FreeCamera(-YARDSIZE,2.0,YARDSIZE),
-		new FixedCamera(-YARDSIZE/2, 20.0, YARDSIZE, 0.0, 0.0, 0.0),
-		new BindedCamera(-YARDSIZE/2, 20.0, YARDSIZE, 0.0, 0.0, 0.0, &optimusPrime)
+Camera* cameras[3] = { new FreeCamera(0.0, 2.0, 0.0),
+		new FixedCamera(-YARDSIZE/4, 60.0, -YARDSIZE/4, 0.0, 0.0, 0.0),
+		new BindedCamera(tractor.getX(), 6.0, tractor.getZ(), 0.0, 0.0, -20.0, &tractor)
 };
 
 Camera* activeCamera = NULL;
 
-void drawBasis(float size) {
-	GLfloat diffuse[] = { 0.2, 0.4, 0.3, 1.0 };
-	glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
-	glBegin(GL_QUADS);
-	glVertex3f(-size, 0.0f, size);
-	glVertex3f(size, 0.0f, size);
-	glVertex3f(size, 0.0f, -size);
-	glVertex3f(-size, 0.0f, -size);
-	glEnd();
+GLuint basisTexture;
+
+void drawBasis(float size)
+{
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, TextureLoader::instance().ASPHALT);
+	glPushMatrix();
+		glTranslatef(-size/2, 0.0, -size/2);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0, 0.0);
+			glNormal3f(0.0,1.0,0.0);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+
+			glTexCoord2f(size/2,0.0);
+			glNormal3f(0.0,1.0,0.0);
+			glVertex3f(size, 0.0f, 0.0f);
+
+
+			glTexCoord2f(size/2, size/2);
+			glNormal3f(0.0,1.0,0.0);
+			glVertex3f(size, 0.0f, size);
+
+
+			glTexCoord2f(0.0, size/2);
+			glNormal3f(0.0,1.0,0.0);
+			glVertex3f(0, 0.0f, size);
+		glEnd();
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 }
+
 
 void drawWalls(float size) {
-	GLfloat diffuse[] = { 0.91, 0.42, 0.22, 1.0 };
-	glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
-	glBegin(GL_QUAD_STRIP);
-	glVertex3f(-size, 4.0f, size);
-	glVertex3f(-size, 0.0f, size);
-	glVertex3f(size, 4.0f, size);
-	glVertex3f(size, 0.0f, size);
-
-	glVertex3f(size, 4.0f, -size);
-	glVertex3f(size, 0.0f, -size);
-
-	glVertex3f(-size, 4.0f, -size);
-	glVertex3f(-size, 0.0f, -size);
-
-	glVertex3f(-size, 4.0f, size);
-	glVertex3f(-size, 0.0f, size);
-	glEnd();
-}
-
-void drawEnviroment() {
-	float size = YARDSIZE;
-	drawBasis(size);
-	if( WALLS ) drawWalls(size);
-}
-
-void drawScene() {
-	drawEnviroment(); //*/
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, TextureLoader::instance().BRICKS);
 	glPushMatrix();
-	glTranslatef(optimusPrime.getX(), 0.0f, optimusPrime.getZ());
-	glRotatef(optimusPrime.getDirection(), 0.0f, 1.0f, 0.0f);
-	optimusPrime.draw();
+		glTranslatef(-size/2, 0.0, -size/2);
+		glBegin(GL_QUAD_STRIP);
+			glTexCoord2f(0.0, 0.0);
+			glVertex3f(0.0, 0.0f, 0.0);
+			glTexCoord2f(0.0, 2.0);
+			glVertex3f(0.0, 4.0f, 0.0);
+			glTexCoord2f(size, 0.0);
+			glVertex3f(0.0, 0.0f, size);
+			glTexCoord2f(size, 2.0);
+			glVertex3f(0.0, 4.0f, size);
+
+			glTexCoord2f(0.0, 0.0);
+			glVertex3f(size, 0.0f, size);
+			glTexCoord2f(0.0, 2.0);
+			glVertex3f(size, 4.0f, size);
+
+			glTexCoord2f(size, 0.0);
+			glVertex3f(size, 0.0f, 0.0);
+			glTexCoord2f(size, 2.0);
+			glVertex3f(size, 4.0f, 0.0);
+
+			glTexCoord2f(0.0, 0.0);
+			glVertex3f(0.0, 0.0f, 0.0);
+			glTexCoord2f(0.0, 2.0);
+			glVertex3f(0.0, 4.0f, 0.0);
+		glEnd();
 	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 }
 
-void init() {
+void drawEnviroment()
+{
+	drawBasis(YARDSIZE);
+	if( WALLS ) drawWalls(YARDSIZE);
+}
+
+void drawScene()
+{
+	drawEnviroment();
+	tractor.draw();
+	trailer.draw();
+
+}
+
+void init()
+{
 	GLfloat mat_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat light_position[] = { 0.0, 0.0, 10.0, 1.0 };
@@ -98,27 +133,20 @@ void init() {
 
 	glDepthFunc( GL_LESS);
 	glEnable( GL_DEPTH_TEST);
+	tractor.bindToTrailer(&trailer);
 }
 
-
-
-
+double lastLoopTime = 0.0;
 
 void display()
 {
 	activeCamera->handle();
-	if (deltaMove>0)
-		optimusPrime.goForward();
-	else if (deltaMove<0)
-		optimusPrime.goBackward();
-	if (deltaAngle)
-		optimusPrime.steerWheels(deltaAngle);
+	tractor.update(0.01);
 
 	glClearColor(SKYBLUE);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Reset transformations
 	glLoadIdentity();
-
 	// Set the camera
 	activeCamera->lookThrough();
 
@@ -248,40 +276,12 @@ void releaseNormalKeys( unsigned char key, int xx, int yy) {
 
 void pressSpecialKeys(int key, int xx, int yy)
 {
-	switch(key)
-	{
-	case GLUT_KEY_UP:
-		deltaMove = 1;
-		break;
-
-	case GLUT_KEY_DOWN:
-		deltaMove = -1;
-		break;
-
-	case GLUT_KEY_LEFT:
-		deltaAngle = 1;
-		break;
-
-	case GLUT_KEY_RIGHT:
-		deltaAngle = -1;
-		break;
-	}
+	tractor.pressKeyHandler(key);
 }
 
 void releaseSpecialKeys(int key, int xx, int yy)
 {
-	switch(key)
-	{
-	case GLUT_KEY_LEFT:
-	case GLUT_KEY_RIGHT:
-		deltaAngle = 0;
-		break;
-
-	case GLUT_KEY_UP:
-	case GLUT_KEY_DOWN:
-		deltaMove= 0;
-		break;
-	}
+	tractor.releaseKeyHandler(key);
 }
 
 int main(int argc, char** argv) {
@@ -290,13 +290,13 @@ int main(int argc, char** argv) {
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(800, 600);
+	glutInitWindowSize(1024, 768);
 
 	glutCreateWindow("OpenGL: OptimusPrime");
 
 	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
 	glutIdleFunc(display);
+	glutReshapeFunc(reshape);
 
 	glutKeyboardFunc(pressNormalKeys);
 	glutSpecialFunc(pressSpecialKeys);

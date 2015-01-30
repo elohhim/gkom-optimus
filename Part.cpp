@@ -23,7 +23,7 @@ Part::~Part() {
 void Part::assemble()
 {
 	glPushMatrix();
-		glTranslatef( positionX, positionY, positionZ);
+		glTranslatef(positionX, positionY, positionZ);
 		draw();
 	glPopMatrix();
 }

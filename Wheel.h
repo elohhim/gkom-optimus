@@ -29,7 +29,6 @@ public:
 
 private:
 	float diameter;
-
 	//parts
 	//Rim rim;
 	//Tire tire;

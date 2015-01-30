@@ -19,6 +19,14 @@
 #define WHITE {1.0f, 1.0f, 1.0f, 1.0f}
 #define YELLOW {1.0f, 1.0f, 0.0f, 1.0f}
 
+
+struct Vertex
+{
+	float position[3];
+	float normal[3];
+	float texture[2];
+};
+
 class Drawable {
 public:
 	Drawable();
@@ -26,7 +34,11 @@ public:
 
 
 	virtual void draw() = 0;
-	void drawCuboid(float x1, float y1, float z1, float x2, float y2, float z2);
+
+	static void drawCuboid(float x1, float y1, float z1, float x2, float y2, float z2);
+	static void drawCuboid(float x1, float y1, float z1, float x2, float y2, float z2, GLuint textureID);
+	static void drawCylinder(float radius, float height, int segments, GLuint textureID1, GLuint textureID2);
+	static GLuint loadTexture(const char * filename);
 };
 
 #endif /* DRAWABLE_H_ */

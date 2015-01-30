@@ -8,10 +8,15 @@
 #ifndef AXLE_H_
 #define AXLE_H_
 
-#include "Part.h"
+#include <cstdlib>
+
+#include "Utils.h"
 #include "Wheel.h"
 
-class Axle: public Part {
+const float MAX_WHEEL_ROTATION = 45.0;
+
+class Axle: public Part
+{
 public:
 	Axle( float x, float y, float z, bool front = false);
 	virtual ~Axle();
@@ -32,6 +37,35 @@ public:
 		if (isSteering)
 			this->wheelsAngle = wheelsAngle;
 	}
+
+	double steerWheels(float angle)
+	{
+		if(wheelsAngle == -MAX_WHEEL_ROTATION)
+		{
+			if(angle>0)
+				wheelsAngle+=angle;
+		}
+		else if(wheelsAngle == MAX_WHEEL_ROTATION)
+		{
+			if(angle<0)
+				wheelsAngle+=angle;
+		}
+		else
+		{
+			wheelsAngle=
+					abs(wheelsAngle+angle)>=MAX_WHEEL_ROTATION
+					?
+					sgn(angle)*MAX_WHEEL_ROTATION
+					:
+					wheelsAngle+angle;
+
+		}
+		return wheelsAngle;
+
+	}
+
+
+	void rotate(double timeTick, float speed);
 
 	bool getIsSteering() const {
 		return isSteering;
