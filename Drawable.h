@@ -13,11 +13,12 @@
 #include <GL/glut.h>
 #include <GL/gl.h>
 
-#define BLACK {0.0f, 0.0f, 0.0f, 1.0f}
-#define RED {1.0f, 0.0f, 0.0f, 1.0f}
-#define GRAY50 {0.5f, 0.5f, 0.5f, 1.0f}
-#define WHITE {1.0f, 1.0f, 1.0f, 1.0f}
-#define YELLOW {1.0f, 1.0f, 0.0f, 1.0f}
+#define BLACK 0.0f, 0.0f, 0.0f, 1.0f
+#define RED 1.0f, 0.0f, 0.0f, 1.0f
+#define GRAY50 0.5f, 0.5f, 0.5f, 1.0f
+#define WHITE 1.0f, 1.0f, 1.0f, 1.0f
+#define YELLOW 1.0f, 1.0f, 0.0f, 1.0f
+#define NAVY_BLUE 0.0f, 0.0f, 1.0f, 1.0f
 
 
 struct Vertex

@@ -46,8 +46,7 @@ void Axle::draw()
 		glRotatef(rotation, 1.0f, 0.0f, 0.0f);
 		//axle
 		glPushMatrix();
-			GLfloat diffuse[] = GRAY50;
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+			glColor4f(GRAY50);
 			glTranslatef(-trackOfWheels/2, 0.0f, 0.0f);
 			glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
 			GLUquadricObj* obj = gluNewQuadric();

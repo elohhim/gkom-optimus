@@ -24,8 +24,7 @@ RearImpactGuard::~RearImpactGuard() {
 
 void RearImpactGuard::draw()
 {
-	GLfloat diffuse[] = YELLOW;
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+	glColor4f(YELLOW);
 	//right hanger
 	glPushMatrix();
 		glTranslatef(-(width/2-0.5), 0.76f, 0.0f);

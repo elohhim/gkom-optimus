@@ -15,6 +15,7 @@ TextureLoader::TextureLoader()
 	TREAD = loadTexture("textures/tread.bmp");
 	ASPHALT = loadTexture("textures/asfalt.bmp");
 	BRICKS = loadTexture("textures/brick.bmp");
+	TRAILER = loadTexture("textures/trailer.bmp");
 }
 
 GLuint TextureLoader::loadTexture( const char* filename )

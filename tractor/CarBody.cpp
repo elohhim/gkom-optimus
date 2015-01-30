@@ -25,7 +25,6 @@ CarBody::~CarBody() {
 
 void CarBody::draw()
 {
-	GLfloat diffuse[] = RED;
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+	glColor4f(RED);
 	Drawable::drawCuboid(-width/ 2, 0, 0, width/2, height, -length);
 }

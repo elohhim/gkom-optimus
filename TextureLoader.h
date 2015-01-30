@@ -26,6 +26,7 @@ public:
 	GLuint TREAD;
 	GLuint ASPHALT;
 	GLuint BRICKS;
+	GLuint TRAILER;
 
 private:
 	GLuint loadTexture( const char* filename );

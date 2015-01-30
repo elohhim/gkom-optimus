@@ -23,7 +23,6 @@ private:
 	float width;
 	float height;
 	float length;
-	GLuint textureID;
 };
 
 #endif /* TRAILERBOX_H_ */

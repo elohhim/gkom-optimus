@@ -70,8 +70,7 @@ void SemiTrailer::draw()
 	glPushMatrix();
 		glTranslatef(position.x, position.y, position.z);
 		glRotatef( getDirection(), 0.0f, 1.0f, 0.0f);
-		GLfloat diffuse[] = WHITE;
-		glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse);
+		glColor4f(WHITE);
 		trailerBox.assemble();
 		rearImpactGuard.assemble();
 		chassis.assemble();

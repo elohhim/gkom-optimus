@@ -55,6 +55,7 @@ void TractorUnit::run(float timeTick)
 //			<< endl << " direction: " << getDirection() << " speed: " << speed << " wheelAngle: " << wheelAngle << endl <<
 //			" ux: " << uDirection.x << " uy: " << uDirection.y << " uz: " << uDirection.z << endl;
 
+	float totalMass = semiTrailer?mass+semiTrailer->getMass():mass;
 
 	//cout << "omega*tt: " << omega*timeTick << endl;
 
@@ -62,7 +63,6 @@ void TractorUnit::run(float timeTick)
 
 	glm::vec3 fDrag = -C_DRAG * speed * velocity;
 	glm::vec3 fRR = -C_RR * velocity;
-
 	glm::vec3 fLong = fDrag + fRR;
 	if (brakes)
 	{
@@ -77,14 +77,14 @@ void TractorUnit::run(float timeTick)
 		fLong += fTraction;
 	}
 
-	float totalMass = semiTrailer?mass+semiTrailer->getMass():mass;
 	glm::vec3 acceleration = fLong / totalMass;
 
 	velocity += timeTick * acceleration;
 	glm::vec3 deltaR = timeTick * glm::length(velocity)*uDirection;
+	//glm::vec3 deltaR = timeTick * velocity;
 
 	position += deltaR;
-	chassis.rotateWheels(timeTick, speed);
+	chassis.rotateWheels(timeTick, glm::length(velocity));
 
 	if(semiTrailer)
 		semiTrailer->run(timeTick, deltaR);

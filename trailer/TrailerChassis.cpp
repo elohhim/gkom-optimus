@@ -25,6 +25,7 @@ TrailerChassis::~TrailerChassis() {}
 void TrailerChassis::draw()
 {
 	glPushMatrix();
+		glColor4f(NAVY_BLUE);
 		glTranslatef(0.0, axle1.getLeftWheel().getDiameter()/2, 0.0);
 		chassisPlate.assemble();
 		axle1.assemble();

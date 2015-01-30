@@ -22,7 +22,6 @@ ChassisPlate::~ChassisPlate()
 
 void ChassisPlate::draw()
 {
-	GLfloat diffuse[] = GRAY50;
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+	glColor4f(NAVY_BLUE);
 	drawCuboid(-width/2, 0, 0, width/2,	height, length);
 }

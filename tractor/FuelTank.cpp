@@ -23,7 +23,6 @@ FuelTank::~FuelTank()
 
 void FuelTank::draw()
 {
-	GLfloat diffuse[] = GRAY50;
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-	Drawable::drawCuboid(-0.3f, -0.3f, 0.0f, 0.3f, 0.3f, 1.0f);
+	glColor4f(GRAY50);
+	Drawable::drawCylinder(0.3,1.0,24, 0, 0);
 }

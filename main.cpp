@@ -28,7 +28,7 @@ SemiTrailer trailer;
 
 Camera* cameras[3] = { new FreeCamera(0.0, 2.0, 0.0),
 		new FixedCamera(-YARDSIZE/4, 60.0, -YARDSIZE/4, 0.0, 0.0, 0.0),
-		new BindedCamera(tractor.getX(), 6.0, tractor.getZ(), 0.0, 0.0, -20.0, &tractor)
+		new BindedCamera(tractor.getX()-3, 1.0, tractor.getZ(), 0.0, 0.0, 0.0, &tractor)
 };
 
 Camera* activeCamera = NULL;
@@ -115,22 +115,32 @@ void drawScene()
 
 void init()
 {
-	GLfloat mat_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light_position[] = { 0.0, 0.0, 10.0, 1.0 };
-	GLfloat lm_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-
-	glMaterialfv( GL_FRONT, GL_AMBIENT, mat_ambient);
-	glMaterialfv( GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialf( GL_FRONT, GL_SHININESS, 50.0);
+	GLfloat light_position[] = { 1.0, 1.0, 0.0, 1.0 };
+	GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+	GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
 	glLightfv( GL_LIGHT0, GL_POSITION, light_position);
-	glLightModelfv( GL_LIGHT_MODEL_AMBIENT, lm_ambient);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
-	glShadeModel( GL_FLAT);
+	GLfloat lm_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	glLightModelfv( GL_LIGHT_MODEL_AMBIENT, lm_ambient);
 
 	glEnable( GL_LIGHTING);
 	glEnable( GL_LIGHT0);
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
+	GLfloat mat_emission[] = {0.0, 0.0, 0.0, 1.0};
+	glMaterialfv( GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv( GL_FRONT, GL_EMISSION, mat_emission);
+	glMaterialf( GL_FRONT, GL_SHININESS, 50.0);
+
+	glColor3f(0.8,0.8,0.8);
+
+	glShadeModel( GL_FLAT);
 	glDepthFunc( GL_LESS);
 	glEnable( GL_DEPTH_TEST);
 	tractor.bindToTrailer(&trailer);
