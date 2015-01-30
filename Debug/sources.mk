@@ -26,5 +26,6 @@ SUBDIRS := \
 trailer \
 tractor \
 . \
+glm/detail \
 camera \
 

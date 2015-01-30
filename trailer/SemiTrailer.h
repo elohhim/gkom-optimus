@@ -8,8 +8,8 @@
 #ifndef SEMITRAILER_H_
 #define SEMITRAILER_H_
 
-#include <glm/glm.hpp>
-#include <glm/gtx/vector_angle.hpp>
+#include "glm/glm.hpp"
+#include "glm/gtx/vector_angle.hpp"
 #include <stddef.h>
 #include <cmath>
 

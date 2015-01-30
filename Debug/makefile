@@ -10,6 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include trailer/subdir.mk
 -include tractor/subdir.mk
+-include glm/detail/subdir.mk
 -include camera/subdir.mk
 -include subdir.mk
 -include objects.mk

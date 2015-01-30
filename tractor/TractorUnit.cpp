@@ -10,7 +10,7 @@
 #include <GL/freeglut_std.h>
 #include <stddef.h>
 #include <iostream>
-#include <glm/gtx/rotate_vector.hpp>
+#include "glm/gtx/rotate_vector.hpp"
 
 TractorUnit::TractorUnit() :
 chassis(0.0f, 0.0f, 0.0f),
